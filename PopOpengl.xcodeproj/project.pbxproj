@@ -60,7 +60,8 @@
 		FB8A07101A2E6B520099596C /* XmlTestReporter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB8A06EB1A2E6B520099596C /* XmlTestReporter.cpp */; };
 		FB8A07131A2E6B880099596C /* TParameters.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB8A07111A2E6B880099596C /* TParameters.cpp */; };
 		FB8A07171A2E6BBF0099596C /* sha1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB8A07151A2E6BBF0099596C /* sha1.cpp */; };
-		FB8A071A1A2E6C3E0099596C /* PopOpencv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB8A07181A2E6C3E0099596C /* PopOpencv.cpp */; };
+		FB8A071A1A2E6C3E0099596C /* PopOpengl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB8A07181A2E6C3E0099596C /* PopOpengl.cpp */; };
+		FB9C899A1A82DFBA00931EFB /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB9C89991A82DFBA00931EFB /* OpenGL.framework */; };
 		FBC3A0E11A308648009DA49E /* SoyScope.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FBC3A0DF1A308648009DA49E /* SoyScope.cpp */; };
 /* End PBXBuildFile section */
 
@@ -198,8 +199,10 @@
 		FB8A07121A2E6B880099596C /* TParameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TParameters.h; path = ../PopTrack/src/TParameters.h; sourceTree = "<group>"; };
 		FB8A07151A2E6BBF0099596C /* sha1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sha1.cpp; path = ../ofxSoylent/src/smallsha1/sha1.cpp; sourceTree = "<group>"; };
 		FB8A07161A2E6BBF0099596C /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sha1.h; path = ../ofxSoylent/src/smallsha1/sha1.h; sourceTree = "<group>"; };
-		FB8A07181A2E6C3E0099596C /* PopOpencv.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PopOpencv.cpp; path = src/PopOpencv.cpp; sourceTree = SOURCE_ROOT; };
-		FB8A07191A2E6C3E0099596C /* PopOpencv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PopOpencv.h; path = src/PopOpencv.h; sourceTree = SOURCE_ROOT; };
+		FB8A07181A2E6C3E0099596C /* PopOpengl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PopOpengl.cpp; path = src/PopOpengl.cpp; sourceTree = SOURCE_ROOT; };
+		FB8A07191A2E6C3E0099596C /* PopOpengl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PopOpengl.h; path = src/PopOpengl.h; sourceTree = SOURCE_ROOT; };
+		FB9C89981A82D2A700931EFB /* RemoteArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RemoteArray.h; path = src/RemoteArray.h; sourceTree = "<group>"; };
+		FB9C89991A82DFBA00931EFB /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		FBC3A0DF1A308648009DA49E /* SoyScope.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SoyScope.cpp; path = ../ofxSoylent/src/SoyScope.cpp; sourceTree = "<group>"; };
 		FBC3A0E01A308648009DA49E /* SoyScope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SoyScope.h; path = ../ofxSoylent/src/SoyScope.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -209,6 +212,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB9C899A1A82DFBA00931EFB /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,6 +230,7 @@
 		FB8A058A1A2E54730099596C = {
 			isa = PBXGroup;
 			children = (
+				FB9C89991A82DFBA00931EFB /* OpenGL.framework */,
 				FB8A05A61A2E57700099596C /* PopApp.xcconfig */,
 				FB8A067B1A2E68C20099596C /* poplib */,
 				FB8A06221A2E5A280099596C /* soylib */,
@@ -245,8 +250,8 @@
 		FB8A05951A2E54730099596C /* src */ = {
 			isa = PBXGroup;
 			children = (
-				FB8A07181A2E6C3E0099596C /* PopOpencv.cpp */,
-				FB8A07191A2E6C3E0099596C /* PopOpencv.h */,
+				FB8A07181A2E6C3E0099596C /* PopOpengl.cpp */,
+				FB8A07191A2E6C3E0099596C /* PopOpengl.h */,
 			);
 			name = src;
 			path = PopCapture;
@@ -257,6 +262,7 @@
 			children = (
 				FB50C04A1A6ABD480011A9D9 /* array.hpp */,
 				FB50C04B1A6ABD480011A9D9 /* bufferarray.hpp */,
+				FB9C89981A82D2A700931EFB /* RemoteArray.h */,
 				FB50C04C1A6ABD480011A9D9 /* HeapArray.hpp */,
 				FB50C04D1A6ABD480011A9D9 /* memheap.cpp */,
 				FB50C04E1A6ABD480011A9D9 /* MemHeap.hpp */,
@@ -477,7 +483,7 @@
 				FB8A06FA1A2E6B520099596C /* TestReporterStdout.cpp in Sources */,
 				FB8A06571A2E5A7C0099596C /* SoyFilesytem.cpp in Sources */,
 				FB8A06681A2E5A7C0099596C /* SoyTypes.cpp in Sources */,
-				FB8A071A1A2E6C3E0099596C /* PopOpencv.cpp in Sources */,
+				FB8A071A1A2E6C3E0099596C /* PopOpengl.cpp in Sources */,
 				FB8A06F91A2E6B520099596C /* TestReporter.cpp in Sources */,
 				FB8A06F11A2E6B520099596C /* DeferredTestResult.cpp in Sources */,
 				FB8A07131A2E6B880099596C /* TParameters.cpp in Sources */,

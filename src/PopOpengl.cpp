@@ -1,4 +1,4 @@
-#include "PopOpencv.h"
+#include "PopOpengl.h"
 #include <TParameters.h>
 #include <SoyDebug.h>
 #include <TProtocolCli.h>
@@ -14,6 +14,18 @@
 
 
 
+
+
+void Soy::TOpenglDevice::MakeTestTexture(SoyPixels& Pixels,std::stringstream& Error)
+{
+	Pixels.Init( 256, 256, SoyPixelsFormat::RGB );
+	
+	Error << "todo";
+}
+
+
+
+/*
 
 SoyContextLock::SoyContextLock(std::shared_ptr<Soy::TScopeCall> Scope) :
 	mScope	( Scope )
@@ -32,16 +44,17 @@ SoyContextLock::SoyContextLock(std::mutex& Mutex)
 	};
 	mScope.reset( new Soy::TScopeCall( LockFunc, UnlockFunc ) );
 }
+*/
 
 
-
-TPopOpencv::TPopOpencv()
+TPopOpengl::TPopOpengl()
 {
-	AddJobHandler("exit", TParameterTraits(), *this, &TPopOpencv::OnExit );
-	
+	AddJobHandler("exit", TParameterTraits(), *this, &TPopOpengl::OnExit );
+
+	AddJobHandler("maketesttexture", TParameterTraits(), *this, &TPopOpengl::OnMakeTestTexture );
 }
 
-void TPopOpencv::AddChannel(std::shared_ptr<TChannel> Channel)
+void TPopOpengl::AddChannel(std::shared_ptr<TChannel> Channel)
 {
 	TChannelManager::AddChannel( Channel );
 	if ( !Channel )
@@ -50,7 +63,7 @@ void TPopOpencv::AddChannel(std::shared_ptr<TChannel> Channel)
 }
 
 
-void TPopOpencv::OnExit(TJobAndChannel& JobAndChannel)
+void TPopOpengl::OnExit(TJobAndChannel& JobAndChannel)
 {
 	mConsoleApp.Exit();
 	
@@ -62,6 +75,22 @@ void TPopOpencv::OnExit(TJobAndChannel& JobAndChannel)
 }
 
 
+void TPopOpengl::OnMakeTestTexture(TJobAndChannel& JobAndChannel)
+{
+	std::stringstream Error;
+	SoyPixels TestTexture;
+	mOpengl.MakeTestTexture( TestTexture, Error );
+	
+	TJobReply Reply( JobAndChannel );
+
+	if ( !Error.str().empty() )
+		Reply.mParams.AddErrorParam( Error.str() );
+	
+	Reply.mParams.AddDefaultParam( TestTexture );
+	
+	TChannel& Channel = JobAndChannel;
+	Channel.OnJobCompleted( Reply );
+}
 
 
 //	horrible global for lambda
@@ -74,7 +103,7 @@ TPopAppError::Type PopMain(TJobParams& Params)
 {
 	std::cout << Params << std::endl;
 	
-	TPopOpencv App;
+	TPopOpengl App;
 
 	auto CommandLineChannel = std::shared_ptr<TChan<TChannelLiteral,TProtocolCli>>( new TChan<TChannelLiteral,TProtocolCli>( SoyRef("cmdline") ) );
 	

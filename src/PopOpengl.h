@@ -14,6 +14,7 @@ namespace Soy
 	class TOpenglDevice;
 };
 
+/*
 //	make this more copyable (avoid the ref pointer)
 //	and maybe a little more multipurpose
 //	basically for overloading "do I have a context, and am I in the right thread for it" for safety
@@ -60,19 +61,34 @@ bool Soy::TOpenglDevice::Test()
 	
 	return true;
 }
+*/
 
 
 
-class TPopOpencv : public TJobHandler, public TChannelManager
+class Soy::TGraphicsDevice
 {
 public:
-	TPopOpencv();
+};
+
+class Soy::TOpenglDevice : public TGraphicsDevice
+{
+public:
+	void		MakeTestTexture(SoyPixels& Pixels,std::stringstream& Error);
+};
+
+
+class TPopOpengl : public TJobHandler, public TChannelManager
+{
+public:
+	TPopOpengl();
 	
 	virtual void	AddChannel(std::shared_ptr<TChannel> Channel) override;
 
 	void			OnExit(TJobAndChannel& JobAndChannel);
+	void			OnMakeTestTexture(TJobAndChannel& JobAndChannel);
 	
 public:
+	Soy::TOpenglDevice			mOpengl;
 	Soy::Platform::TConsoleApp	mConsoleApp;
 };
 
