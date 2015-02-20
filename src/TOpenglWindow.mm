@@ -5,25 +5,22 @@
 
 
 
-class TWindowWrapper
+class MacWindow
 {
 public:
-	TWindowWrapper() :
-		mWindow	( nullptr ),
-		mView	( nullptr )
+	MacWindow() :
+		mWindow	( nullptr )
 	{
 	}
-	~TWindowWrapper()
+	~MacWindow()
 	{
 		[mWindow release];
-		[mView release];
 	}
 	
-	bool			IsValid()	{	return mWindow && mView;	}
+	bool			IsValid()	{	return mWindow;	}
 
 public:
 	NSWindow*		mWindow;
-	MyOpenGLView*	mView;
 };
 
 
@@ -33,25 +30,12 @@ TOpenglWindow::TOpenglWindow(const std::string& Name,vec2f Pos,vec2f Size,std::s
 {
 	//	gr; check we have an NSApplication initalised here and fail if running as command line app
 
-	mWrapper.reset( new TWindowWrapper );
-	auto& Wrapper = *mWrapper;
+	mMacWindow.reset( new MacWindow );
+	auto& Wrapper = *mMacWindow;
 	auto*& mWindow = Wrapper.mWindow;
-	auto*& mView = Wrapper.mView;
-
-/*
-	NSRect frame = NSMakeRect(0, 0, 200, 200);
-	NSWindow* window  = [[NSWindow alloc] initWithContentRect:frame
-													 styleMask:NSBorderlessWindowMask
-													   backing:NSBackingStoreBuffered
-														 defer:NO];
 
 	
-	[window retain];
-	[window setBackgroundColor:[NSColor blueColor]];
-	[window makeKeyAndOrderFront:NSApp];
-
 	
-	*/
 	
 	//NSUInteger styleMask =    NSBorderlessWindowMask;
 	NSUInteger Style = NSTitledWindowMask|NSClosableWindowMask|NSResizableWindowMask;
@@ -60,6 +44,17 @@ TOpenglWindow::TOpenglWindow(const std::string& Name,vec2f Pos,vec2f Size,std::s
 	NSRect WindowRect = [NSWindow contentRectForFrameRect:FrameRect styleMask:Style];
 //	NSRect WindowRect = NSMakeRect( Pos.x, Pos.y, Size.x, Size.y );
 //	NSRect WindowRect = [[NSScreen mainScreen] frame];
+
+	//	create a view
+	std::stringstream ViewError;
+	mView.reset( new TOpenglView( vec2f(FrameRect.origin.x,FrameRect.origin.y), vec2f(FrameRect.size.width,FrameRect.size.height), ViewError ) );
+	if ( !mView->IsValid() )
+	{
+		mView.reset();
+		Error << "Failed to create view: " << ViewError.str();
+		return;
+	}
+
 	
 	bool Defer = NO;
 	mWindow = [[NSWindow alloc] initWithContentRect:WindowRect styleMask:Style backing:NSBackingStoreBuffered defer:Defer];
@@ -76,25 +71,9 @@ TOpenglWindow::TOpenglWindow(const std::string& Name,vec2f Pos,vec2f Size,std::s
 //	[Window setOpaque:YES];
 //	[Window setHidesOnDeactivate:YES];
 
-	//	make "pixelformat" (context params)
-	NSOpenGLPixelFormatAttribute attrs[] =
-	{
-		NSOpenGLPFADoubleBuffer,
-		0
-	};
-	NSOpenGLPixelFormat* pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attrs];
- 
-	NSRect viewRect = NSMakeRect(0.0, 0.0, WindowRect.size.width, WindowRect.size.height);
-	mView = [[MyOpenGLView alloc] initWithFrame:viewRect pixelFormat: pixelFormat];
-	[mView retain];
-	if ( !mView )
-	{
-		Error << "Failed to create view";
-		return;
-	}
 	
 	//	assign view to window
-	[mWindow setContentView: mView];
+	[mWindow setContentView: mView->mView];
 
 	id Sender = NSApp;
 	[mWindow setBackgroundColor:[NSColor blueColor]];
@@ -108,5 +87,5 @@ TOpenglWindow::~TOpenglWindow()
 	
 bool TOpenglWindow::IsValid()
 {
-	return mWrapper && mWrapper->IsValid();
+	return mMacWindow && mMacWindow->IsValid() && mView && mView->IsValid();
 }

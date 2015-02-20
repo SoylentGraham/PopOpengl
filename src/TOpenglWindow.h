@@ -8,8 +8,8 @@
 #endif
 
 
-class TWindowWrapper;
-
+class MacWindow;
+class TOpenglView;
 
 class TOpenglWindow
 {
@@ -21,6 +21,9 @@ public:
 	
 public:
 	std::string		mName;
-	std::shared_ptr<TWindowWrapper>	mWrapper;
+	std::shared_ptr<TOpenglView>	mView;
+
+private:
+	std::shared_ptr<MacWindow>		mMacWindow;
 };
 

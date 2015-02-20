@@ -128,7 +128,6 @@
 		FBF67B021A96AA5500F74C38 /* TOpenglView.mm in Sources */ = {isa = PBXBuildFile; fileRef = FBF67B011A96AA5500F74C38 /* TOpenglView.mm */; };
 		FBF67B061A96B26900F74C38 /* TChannelFork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FBF67B041A96B26900F74C38 /* TChannelFork.cpp */; };
 		FBF67B081A96B2BE00F74C38 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBF67B071A96B2BE00F74C38 /* Cocoa.framework */; };
-		FBF67B331A974A7B00F74C38 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FBF67B321A974A7B00F74C38 /* Info.plist */; };
 		FBF67B351A974AAF00F74C38 /* PopMain.mm in Sources */ = {isa = PBXBuildFile; fileRef = FBF67B341A974AAF00F74C38 /* PopMain.mm */; };
 		FBF67B361A974AAF00F74C38 /* PopMain.mm in Sources */ = {isa = PBXBuildFile; fileRef = FBF67B341A974AAF00F74C38 /* PopMain.mm */; };
 /* End PBXBuildFile section */
@@ -599,7 +598,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				FB2534BA1A974D0700A61590 /* PopOpengl.xib in Resources */,
-				FBF67B331A974A7B00F74C38 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
