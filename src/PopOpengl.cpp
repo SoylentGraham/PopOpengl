@@ -11,7 +11,7 @@
 #include <TFeatureBinRing.h>
 #include <SortArray.h>
 #include <TChannelLiteral.h>
-
+#include "TOpenglWindow.h"
 
 
 
@@ -52,6 +52,10 @@ TPopOpengl::TPopOpengl()
 	AddJobHandler("exit", TParameterTraits(), *this, &TPopOpengl::OnExit );
 
 	AddJobHandler("maketesttexture", TParameterTraits(), *this, &TPopOpengl::OnMakeTestTexture );
+
+	TParameterTraits MakeWindowTraits;
+	MakeWindowTraits.mDefaultParams.PushBack( std::make_tuple(std::string("name"),std::string("gl") ) );
+	AddJobHandler("makewindow", MakeWindowTraits, *this, &TPopOpengl::OnMakeWindow );
 }
 
 void TPopOpengl::AddChannel(std::shared_ptr<TChannel> Channel)
@@ -92,15 +96,46 @@ void TPopOpengl::OnMakeTestTexture(TJobAndChannel& JobAndChannel)
 	Channel.OnJobCompleted( Reply );
 }
 
+void TPopOpengl::OnMakeWindow(TJobAndChannel &JobAndChannel)
+{
+	auto& Job = JobAndChannel.GetJob();
+	auto Name = Job.mParams.GetParamAs<std::string>("name");
+
+	vec2f Pos( 100,100 );
+	vec2f Size( 300, 200 );
+	std::stringstream Error;
+	std::shared_ptr<TOpenglWindow> pWindow( new TOpenglWindow(Name,Pos,Size,Error) );
+	if ( !pWindow->IsValid() )
+	{
+		TJobReply Reply(Job);
+		Reply.mParams.AddErrorParam( Error.str() );
+		auto& Channel = JobAndChannel.GetChannel();
+		Channel.SendJobReply( Reply );
+		return;
+	}
+
+	mWindows.PushBack( pWindow );
+	TJobReply Reply(Job);
+	Reply.mParams.AddDefaultParam("OK");
+	if ( !Error.str().empty() )
+		Reply.mParams.AddErrorParam( Error.str() );
+	
+	auto& Channel = JobAndChannel.GetChannel();
+	Channel.SendJobReply( Reply );
+}
+
+
 
 //	horrible global for lambda
 std::shared_ptr<TChannel> gStdioChannel;
 std::shared_ptr<TChannel> gCaptureChannel;
 
-
+#include "TOpenglWindow.h"
 
 TPopAppError::Type PopMain(TJobParams& Params)
 {
+	std::stringstream error;
+	new TOpenglWindow("hello", vec2f(10,10), vec2f(200,200), error );
 	std::cout << Params << std::endl;
 	
 	TPopOpengl App;
@@ -204,10 +239,12 @@ TPopAppError::Type PopMain(TJobParams& Params)
 */
 	
 	
+#if !defined(TARGET_OSX)
 	//	run
 	App.mConsoleApp.WaitForExit();
 
 	gStdioChannel.reset();
+#endif
 	return TPopAppError::Success;
 }
 

@@ -5,6 +5,7 @@
 #include <TChannel.h>
 
 
+class TOpenglWindow;
 
 
 //	opengl
@@ -77,6 +78,10 @@ public:
 };
 
 
+
+
+
+
 class TPopOpengl : public TJobHandler, public TChannelManager
 {
 public:
@@ -86,10 +91,13 @@ public:
 
 	void			OnExit(TJobAndChannel& JobAndChannel);
 	void			OnMakeTestTexture(TJobAndChannel& JobAndChannel);
+	void			OnMakeWindow(TJobAndChannel& JobAndChannel);
 	
 public:
 	Soy::TOpenglDevice			mOpengl;
 	Soy::Platform::TConsoleApp	mConsoleApp;
+	
+	Array<std::shared_ptr<TOpenglWindow>>	mWindows;
 };
 
 
