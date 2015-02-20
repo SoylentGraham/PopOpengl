@@ -18,8 +18,17 @@ public:
 	~TOpenglWindow();
 	
 	bool			IsValid();
+
+private:
+	void			OnViewRender(bool& Dummy)
+	{
+		mOnRender.OnTriggered(Dummy);
+	}
 	
 public:
+	SoyEvent<bool>	mOnRender;			//	for now we have a 1:1 view window connection
+	SoyListenerId	mOnRenderListener;
+	
 	std::string		mName;
 	std::shared_ptr<TOpenglView>	mView;
 

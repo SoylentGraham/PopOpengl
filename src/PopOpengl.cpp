@@ -11,8 +11,7 @@
 #include <TFeatureBinRing.h>
 #include <SortArray.h>
 #include <TChannelLiteral.h>
-#include "TOpenglWindow.h"
-
+#include "TTextureWindow.h"
 
 
 
@@ -104,7 +103,7 @@ void TPopOpengl::OnMakeWindow(TJobAndChannel &JobAndChannel)
 	vec2f Pos( 100,100 );
 	vec2f Size( 300, 200 );
 	std::stringstream Error;
-	std::shared_ptr<TOpenglWindow> pWindow( new TOpenglWindow(Name,Pos,Size,Error) );
+	std::shared_ptr<TTextureWindow> pWindow( new TTextureWindow(Name,Pos,Size,Error) );
 	if ( !pWindow->IsValid() )
 	{
 		TJobReply Reply(Job);

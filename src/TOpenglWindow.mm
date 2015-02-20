@@ -54,6 +54,7 @@ TOpenglWindow::TOpenglWindow(const std::string& Name,vec2f Pos,vec2f Size,std::s
 		Error << "Failed to create view: " << ViewError.str();
 		return;
 	}
+	mOnRenderListener = mView->mOnRender.AddListener( *this, &TOpenglWindow::OnViewRender );
 
 	
 	bool Defer = NO;

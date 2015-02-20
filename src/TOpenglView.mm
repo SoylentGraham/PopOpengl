@@ -19,7 +19,7 @@ TOpenglView::TOpenglView(vec2f Position,vec2f Size,std::stringstream& Error) :
 	}
  
 	NSRect viewRect = NSMakeRect( Position.x, Position.y, Size.x, Size.y );
-	mView = [[MacOpenglView alloc] initWithFrame:viewRect pixelFormat: pixelFormat];
+	mView = [[MacOpenglView alloc] initFrameWithParent:this viewRect:viewRect pixelFormat:pixelFormat];
 	[mView retain];
 	if ( !mView )
 	{
@@ -34,26 +34,19 @@ TOpenglView::~TOpenglView()
 	[mView release];
 }
 
-static void drawAnObject ()
+void RenderError(bool& Dummy)
 {
-	glColor3f(1.0f, 0.85f, 0.35f);
-	glBegin(GL_TRIANGLES);
-	{
-		glVertex3f(  0.0,  0.6, 0.0);
-		glVertex3f( -0.2, -0.3, 0.0);
-		glVertex3f(  0.2, -0.3 ,0.0);
-	}
-	glEnd();
+	glClearColor(1,0,0,1);
+	glClear(GL_COLOR_BUFFER_BIT);
 }
-
-
 
 
 @implementation MacOpenglView
 
-- (id)initWithParent:(TOpenglView*)Parent
+
+- (id)initFrameWithParent:(TOpenglView*)Parent viewRect:(NSRect)viewRect pixelFormat:(NSOpenGLPixelFormat*)pixelFormat;
 {
-	self = [super init];
+	self = [super initWithFrame:viewRect pixelFormat: pixelFormat];
 	if (self)
 	{
 		mParent = Parent;
@@ -64,11 +57,17 @@ static void drawAnObject ()
 
 -(void) drawRect: (NSRect) bounds
 {
-	std::Debug << "draw rect" << std::endl;
+	//	render callback
+	bool Dummy;
+	if ( !mParent )
+	{
+		RenderError(Dummy);
+	}
+	else
+	{
+		mParent->mOnRender.OnTriggered( Dummy );
+	}
 	
-	glClearColor(0.8, 0.4, 0.3, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT);
-	drawAnObject();
 	glFlush();
 	
 	//	swap OSX buffers - required with os double buffering (NSOpenGLPFADoubleBuffer)

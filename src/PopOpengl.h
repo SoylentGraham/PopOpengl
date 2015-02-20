@@ -5,7 +5,7 @@
 #include <TChannel.h>
 
 
-class TOpenglWindow;
+class TTextureWindow;
 
 
 //	opengl
@@ -97,7 +97,7 @@ public:
 	Soy::TOpenglDevice			mOpengl;
 	Soy::Platform::TConsoleApp	mConsoleApp;
 	
-	Array<std::shared_ptr<TOpenglWindow>>	mWindows;
+	Array<std::shared_ptr<TTextureWindow>>	mWindows;
 };
 
 

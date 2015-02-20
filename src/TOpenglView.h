@@ -9,7 +9,8 @@ class TOpenglView;
 	TOpenglView*	mParent;
 }
 
-- (id)initWithParent:(TOpenglView*)Parent;
+- (id)initFrameWithParent:(TOpenglView*)Parent viewRect:(NSRect)viewRect pixelFormat:(NSOpenGLPixelFormat*)pixelFormat;
+
 
 //	overloaded
 - (void) drawRect: (NSRect) bounds;
@@ -25,5 +26,6 @@ public:
 	bool			IsValid()	{	return mView != nullptr;	}
 	
 public:
+	SoyEvent<bool>	mOnRender;
 	MacOpenglView*	mView;
 };
