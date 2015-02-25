@@ -136,6 +136,7 @@
 		FBF67B081A96B2BE00F74C38 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBF67B071A96B2BE00F74C38 /* Cocoa.framework */; };
 		FBF67B351A974AAF00F74C38 /* PopMain.mm in Sources */ = {isa = PBXBuildFile; fileRef = FBF67B341A974AAF00F74C38 /* PopMain.mm */; };
 		FBF67B361A974AAF00F74C38 /* PopMain.mm in Sources */ = {isa = PBXBuildFile; fileRef = FBF67B341A974AAF00F74C38 /* PopMain.mm */; };
+		FBFFDB631A9D43E800330A83 /* PopAppBundle.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = FBFFDB621A9D43E800330A83 /* PopAppBundle.xcconfig */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -295,6 +296,7 @@
 		FBF67B321A974A7B00F74C38 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = SOURCE_ROOT; };
 		FBF67B341A974AAF00F74C38 /* PopMain.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PopMain.mm; path = src/PopMain.mm; sourceTree = "<group>"; };
 		FBF67B371A974BF400F74C38 /* PopOpengl.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PopOpengl.xib; sourceTree = SOURCE_ROOT; };
+		FBFFDB621A9D43E800330A83 /* PopAppBundle.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = PopAppBundle.xcconfig; path = ../NewChromantics/PopTrack/PopAppBundle.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -333,6 +335,7 @@
 				FBF67B071A96B2BE00F74C38 /* Cocoa.framework */,
 				FB9C89991A82DFBA00931EFB /* OpenGL.framework */,
 				FB8A05A61A2E57700099596C /* PopApp.xcconfig */,
+				FBFFDB621A9D43E800330A83 /* PopAppBundle.xcconfig */,
 				FB8A067B1A2E68C20099596C /* poplib */,
 				FB8A06221A2E5A280099596C /* soylib */,
 				FB8A05951A2E54730099596C /* src */,
@@ -615,6 +618,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FBFFDB631A9D43E800330A83 /* PopAppBundle.xcconfig in Resources */,
 				FB2534BA1A974D0700A61590 /* PopOpengl.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -864,11 +868,10 @@
 		};
 		FBF67B2D1A974A0900F74C38 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FBFFDB621A9D43E800330A83 /* PopAppBundle.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -880,7 +883,6 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 			};
@@ -888,11 +890,10 @@
 		};
 		FBF67B2E1A974A0900F74C38 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FBFFDB621A9D43E800330A83 /* PopAppBundle.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;

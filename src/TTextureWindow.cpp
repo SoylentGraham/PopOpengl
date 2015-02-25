@@ -30,6 +30,7 @@ void TTextureWindow::OnOpenglRender(bool& Dummy)
 {
 	if ( !mDevice )
 		return;
+	mDevice->SetRenderThread();
 	mDevice->OnRenderThreadUpdate();
 	
 	//	new texture!

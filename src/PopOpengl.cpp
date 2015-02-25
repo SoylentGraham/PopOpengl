@@ -46,7 +46,8 @@ SoyContextLock::SoyContextLock(std::mutex& Mutex)
 */
 
 
-TPopOpengl::TPopOpengl()
+TPopOpengl::TPopOpengl() :
+	TJobHandler	( static_cast<TChannelManager&>(*this) )
 {
 	AddJobHandler("exit", TParameterTraits(), *this, &TPopOpengl::OnExit );
 
@@ -128,16 +129,18 @@ void TPopOpengl::OnMakeWindow(TJobAndChannel &JobAndChannel)
 //	horrible global for lambda
 std::shared_ptr<TChannel> gStdioChannel;
 std::shared_ptr<TChannel> gCaptureChannel;
+static std::shared_ptr<TPopOpengl> gApp;
 
 #include "TOpenglWindow.h"
 
 TPopAppError::Type PopMain(TJobParams& Params)
 {
 	std::stringstream error;
-	new TOpenglWindow("hello", vec2f(10,10), vec2f(200,200), error );
+	new TTextureWindow("hello", vec2f(10,10), vec2f(200,200), error );
 	std::cout << Params << std::endl;
 	
-	TPopOpengl App;
+	gApp.reset( new TPopOpengl() );
+	auto& App = *gApp;
 
 	auto CommandLineChannel = std::shared_ptr<TChan<TChannelLiteral,TProtocolCli>>( new TChan<TChannelLiteral,TProtocolCli>( SoyRef("cmdline") ) );
 	
@@ -238,12 +241,11 @@ TPopAppError::Type PopMain(TJobParams& Params)
 */
 	
 	
-#if !defined(TARGET_OSX)
+#if !defined(TARGET_OSX_BUNDLE)
 	//	run
 	App.mConsoleApp.WaitForExit();
-
-	gStdioChannel.reset();
 #endif
+
 	return TPopAppError::Success;
 }
 

@@ -2,7 +2,7 @@
 #include <Cocoa/Cocoa.h>
 #include "TOpenglWindow.h"
 #include "TOpenglView.h"
-
+#include "PopMain.h"
 
 
 class MacWindow
@@ -29,7 +29,19 @@ TOpenglWindow::TOpenglWindow(const std::string& Name,vec2f Pos,vec2f Size,std::s
 	mName	( Name )
 {
 	//	gr; check we have an NSApplication initalised here and fail if running as command line app
+#if !defined(TARGET_OSX_BUNDLE)
+	{
+		Error << "Cannot create windows in non-bundle apps, I don't think." << std::endl;
+		return;
+	}
+#endif
 
+	if ( !Soy::Platform::BundleInitialised )
+	{
+		Error << "NSApplication hasn't been started. Cannot create window" << std::endl;
+		return;
+	}
+	
 	mMacWindow.reset( new MacWindow );
 	auto& Wrapper = *mMacWindow;
 	auto*& mWindow = Wrapper.mWindow;
