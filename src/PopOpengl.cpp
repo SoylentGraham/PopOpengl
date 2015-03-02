@@ -102,7 +102,7 @@ void TPopOpengl::OnMakeWindow(TJobAndChannel &JobAndChannel)
 	auto Name = Job.mParams.GetParamAs<std::string>("name");
 
 	vec2f Pos( 100,100 );
-	vec2f Size( 300, 200 );
+	vec2f Size( 400, 400 );
 	std::stringstream Error;
 	std::shared_ptr<TTextureWindow> pWindow( new TTextureWindow(Name,Pos,Size,Error) );
 	if ( !pWindow->IsValid() )
@@ -113,6 +113,15 @@ void TPopOpengl::OnMakeWindow(TJobAndChannel &JobAndChannel)
 		Channel.SendJobReply( Reply );
 		return;
 	}
+	
+	SoyPixels TestTexture;
+	TestTexture.Init( 256, 256, SoyPixelsFormat::RGB );
+	BufferArray<char,3> Rgb;
+	Rgb.PushBack( 255 );
+	Rgb.PushBack( 0 );
+	Rgb.PushBack( 0 );
+	TestTexture.SetColour( GetArrayBridge(Rgb) );
+	pWindow->SetTexture( TestTexture );
 
 	mWindows.PushBack( pWindow );
 	TJobReply Reply(Job);
@@ -135,8 +144,6 @@ static std::shared_ptr<TPopOpengl> gApp;
 
 TPopAppError::Type PopMain(TJobParams& Params)
 {
-	std::stringstream error;
-	new TTextureWindow("hello", vec2f(10,10), vec2f(200,200), error );
 	std::cout << Params << std::endl;
 	
 	gApp.reset( new TPopOpengl() );
@@ -239,8 +246,22 @@ TPopAppError::Type PopMain(TJobParams& Params)
 	else
 		CommandLineChannel->mOnConnected.AddListener( BootupFunc );
 */
-	
-	
+
+	static bool MakeWindowTest = true;
+	if ( MakeWindowTest )
+	{
+		auto& Channel = *CommandLineChannel;
+		TJob Job;
+		Job.mChannelMeta.mChannelRef = Channel.GetChannelRef();
+		Job.mParams.mCommand = "makewindow";
+		Job.mParams.AddParam("name", "hello" );
+		
+		//	gr: err how is this not send command?
+		Channel.Execute( Job.mParams.mCommand, Job.mParams );
+		//Channel.SendCommand( Job );
+	}
+
+
 #if !defined(TARGET_OSX_BUNDLE)
 	//	run
 	App.mConsoleApp.WaitForExit();
