@@ -26,7 +26,8 @@ public:
 
 
 TOpenglWindow::TOpenglWindow(const std::string& Name,vec2f Pos,vec2f Size,std::stringstream& Error) :
-	mName	( Name )
+	SoyWorkerThread		( Soy::GetTypeName(*this), SoyWorkerWaitMode::Sleep ),
+	mName				( Name )
 {
 	//	gr; check we have an NSApplication initalised here and fail if running as command line app
 #if !defined(TARGET_OSX_BUNDLE)
@@ -92,6 +93,8 @@ TOpenglWindow::TOpenglWindow(const std::string& Name,vec2f Pos,vec2f Size,std::s
 	[mWindow setBackgroundColor:[NSColor blueColor]];
 	[mWindow makeKeyAndOrderFront:Sender];
 	
+	
+	SoyWorkerThread::Start();
 }
 
 TOpenglWindow::~TOpenglWindow()
@@ -101,4 +104,13 @@ TOpenglWindow::~TOpenglWindow()
 bool TOpenglWindow::IsValid()
 {
 	return mMacWindow && mMacWindow->IsValid() && mView && mView->IsValid();
+}
+
+bool TOpenglWindow::Redraw()
+{
+	if ( !IsValid() )
+		return false;
+	
+	[mView->mView display];
+	return true;
 }

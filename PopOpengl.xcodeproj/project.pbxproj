@@ -137,6 +137,8 @@
 		FBF67B351A974AAF00F74C38 /* PopMain.mm in Sources */ = {isa = PBXBuildFile; fileRef = FBF67B341A974AAF00F74C38 /* PopMain.mm */; };
 		FBF67B361A974AAF00F74C38 /* PopMain.mm in Sources */ = {isa = PBXBuildFile; fileRef = FBF67B341A974AAF00F74C38 /* PopMain.mm */; };
 		FBFFDB631A9D43E800330A83 /* PopAppBundle.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = FBFFDB621A9D43E800330A83 /* PopAppBundle.xcconfig */; };
+		FBFFDB661AA11D5800330A83 /* SoyOpengl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FBFFDB641AA11D5800330A83 /* SoyOpengl.cpp */; };
+		FBFFDB671AA11D5800330A83 /* SoyOpengl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FBFFDB641AA11D5800330A83 /* SoyOpengl.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -297,6 +299,8 @@
 		FBF67B341A974AAF00F74C38 /* PopMain.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PopMain.mm; path = src/PopMain.mm; sourceTree = "<group>"; };
 		FBF67B371A974BF400F74C38 /* PopOpengl.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PopOpengl.xib; sourceTree = SOURCE_ROOT; };
 		FBFFDB621A9D43E800330A83 /* PopAppBundle.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = PopAppBundle.xcconfig; path = ../NewChromantics/PopTrack/PopAppBundle.xcconfig; sourceTree = "<group>"; };
+		FBFFDB641AA11D5800330A83 /* SoyOpengl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SoyOpengl.cpp; path = src/SoyOpengl.cpp; sourceTree = SOURCE_ROOT; };
+		FBFFDB651AA11D5800330A83 /* SoyOpengl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SoyOpengl.h; path = src/SoyOpengl.h; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -355,20 +359,22 @@
 		FB8A05951A2E54730099596C /* src */ = {
 			isa = PBXGroup;
 			children = (
-				FB2534FF1A97763D00A61590 /* UnityDevice.cpp */,
-				FB2535001A97763D00A61590 /* UnityDevice.h */,
-				FB2535031A978EE900A61590 /* Unity.cpp */,
-				FB2535041A978EE900A61590 /* Unity.h */,
-				FB2534F71A97758D00A61590 /* TTextureWindow.cpp */,
-				FB2534F81A97758D00A61590 /* TTextureWindow.h */,
+				FBF67B321A974A7B00F74C38 /* Info.plist */,
 				FB8A07181A2E6C3E0099596C /* PopOpengl.cpp */,
 				FB8A07191A2E6C3E0099596C /* PopOpengl.h */,
-				FBF67B001A96AA5500F74C38 /* TOpenglView.h */,
-				FBF67B031A96AF4100F74C38 /* TOpenglWindow.h */,
-				FBF67B011A96AA5500F74C38 /* TOpenglView.mm */,
-				FBF67AFE1A96A9C800F74C38 /* TOpenglWindow.mm */,
-				FBF67B321A974A7B00F74C38 /* Info.plist */,
 				FBF67B371A974BF400F74C38 /* PopOpengl.xib */,
+				FBFFDB641AA11D5800330A83 /* SoyOpengl.cpp */,
+				FBFFDB651AA11D5800330A83 /* SoyOpengl.h */,
+				FBF67B001A96AA5500F74C38 /* TOpenglView.h */,
+				FBF67B011A96AA5500F74C38 /* TOpenglView.mm */,
+				FBF67B031A96AF4100F74C38 /* TOpenglWindow.h */,
+				FBF67AFE1A96A9C800F74C38 /* TOpenglWindow.mm */,
+				FB2534F71A97758D00A61590 /* TTextureWindow.cpp */,
+				FB2534F81A97758D00A61590 /* TTextureWindow.h */,
+				FB2535031A978EE900A61590 /* Unity.cpp */,
+				FB2535041A978EE900A61590 /* Unity.h */,
+				FB2534FF1A97763D00A61590 /* UnityDevice.cpp */,
+				FB2535001A97763D00A61590 /* UnityDevice.h */,
 			);
 			name = src;
 			path = PopCapture;
@@ -661,6 +667,7 @@
 				FB8A065E1A2E5A7C0099596C /* SoyPng.cpp in Sources */,
 				FB6650CD1A56FD8600DF0A12 /* SoyDebug.mm in Sources */,
 				FB8A06551A2E5A7C0099596C /* SoyDebug.cpp in Sources */,
+				FBFFDB661AA11D5800330A83 /* SoyOpengl.cpp in Sources */,
 				FBF67B021A96AA5500F74C38 /* TOpenglView.mm in Sources */,
 				FB2534F91A97758D00A61590 /* TTextureWindow.cpp in Sources */,
 				FB8A07171A2E6BBF0099596C /* sha1.cpp in Sources */,
@@ -730,6 +737,7 @@
 				FB2534F21A974F0600A61590 /* sha1.cpp in Sources */,
 				FB2534C61A974E7400A61590 /* TParameters.cpp in Sources */,
 				FB2534EF1A974EFB00A61590 /* TestRunner.cpp in Sources */,
+				FBFFDB671AA11D5800330A83 /* SoyOpengl.cpp in Sources */,
 				FB2534D61A974E7B00A61590 /* SoyRef.cpp in Sources */,
 				FB2534FA1A97758D00A61590 /* TTextureWindow.cpp in Sources */,
 				FB2534D01A974E7B00A61590 /* SoyDebug.cpp in Sources */,

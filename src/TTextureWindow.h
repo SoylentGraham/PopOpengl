@@ -3,6 +3,7 @@
 
 //	re-using unity opengl device interface
 #include "UnityDevice.h"
+#include "SoyOpengl.h"
 
 class TOpenglWindow;
 
@@ -17,6 +18,7 @@ public:
 	void		OnOpenglRender(bool& Dummy);	//	render callback
 
 private:
+	GlProgram			mTextureCopyProgram;
 	Unity::TTexture		mTexture;
 	std::shared_ptr<TUnityDevice_Opengl>	mDevice;	//	device for window's context
 	std::shared_ptr<TOpenglWindow>	mWindow;

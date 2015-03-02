@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SoyTypes.h>
-
+#include <SoyThread.h>
 
 #if __has_feature(objc_arc)
 #error expected ARC off, if we NEED arc, then the NSWindow & view need to go in a pure obj-c wrapper to auto retain the refcounted object
@@ -11,13 +11,20 @@
 class MacWindow;
 class TOpenglView;
 
-class TOpenglWindow
+class TOpenglWindow : public SoyWorkerThread
 {
 public:
 	TOpenglWindow(const std::string& Name,vec2f Pos,vec2f Size,std::stringstream& Error);
 	~TOpenglWindow();
 	
+	bool			Redraw();	//	trigger a redraw
 	bool			IsValid();
+	
+	virtual bool	Iteration()
+	{
+		Redraw();
+		return true;
+	}
 
 private:
 	void			OnViewRender(bool& Dummy)

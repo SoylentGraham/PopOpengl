@@ -1,6 +1,6 @@
 #include "TTextureWindow.h"
 #include "TOpenglWindow.h"
-
+#include "SoyOpengl.h"
 
 TTextureWindow::TTextureWindow(std::string Name,vec2f Position,vec2f Size,std::stringstream& Error)
 {
@@ -26,6 +26,68 @@ void TTextureWindow::SetTexture(const SoyPixelsImpl& Pixels)
 	mPendingTexture.unlock();
 }
 
+bool HasOpenglError()
+{
+	auto Error = glGetError();
+	if ( Error != GL_NO_ERROR )
+	{
+		auto* pErrorString = reinterpret_cast<const char*>(glGetString( Error ));
+		std::string ErrorString;
+		if ( pErrorString )
+			ErrorString = pErrorString;
+		else
+			ErrorString = "Unknown error";
+		std::Debug << "opengl error #" << Error << " " << ErrorString << std::endl;
+		return true;
+	}
+
+	return false;
+}
+
+vec2f GetFrameBufferSize(GLint FrameBufferId)
+{
+	vec2f Error(200,200);
+
+	auto BindScope = SoyScope( [FrameBufferId]{ glBindRenderbuffer( GL_FRAMEBUFFER, FrameBufferId ); }, []{ glBindRenderbuffer( GL_FRAMEBUFFER, 0 ); } );
+	if ( HasOpenglError() )
+		return Error;
+
+	
+	//	0 = screen
+	//	glGetFramebufferAttachmentParameteriv( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+
+	GLint FrameBufferObjectType;
+	glGetFramebufferAttachmentParameteriv( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE, &FrameBufferObjectType );
+	if ( HasOpenglError() )
+		return Error;
+	
+	
+	if ( FrameBufferObjectType == GL_NONE )
+		return Error;
+	
+	if ( FrameBufferObjectType == GL_FRAMEBUFFER_DEFAULT )
+	{
+		return Error;
+	}
+	
+	if ( FrameBufferObjectType == GL_TEXTURE )
+	{
+		return Error;
+	}
+
+	if ( FrameBufferObjectType == GL_RENDERBUFFER )
+	{
+		GLint Width,Height;
+		glGetRenderbufferParameteriv( GL_FRAMEBUFFER, GL_RENDERBUFFER_WIDTH, &Width );
+		glGetRenderbufferParameteriv( GL_FRAMEBUFFER, GL_RENDERBUFFER_WIDTH, &Height );
+		return vec2f( Width, Height );
+	}
+
+	Soy::Assert( false, std::stringstream() << "Unknown frame buffer object type " << FrameBufferObjectType );
+	return Error;
+}
+
+
 void TTextureWindow::OnOpenglRender(bool& Dummy)
 {
 	if ( !mDevice )
@@ -50,17 +112,89 @@ void TTextureWindow::OnOpenglRender(bool& Dummy)
 		mPendingTexture.unlock();
 	}
 	
-	//	render texture to fbo
+	/*
+	//	load copy movie program
+	if ( !mTextureCopyProgram.IsValid() )
+	{
+		auto& ErrorStream = std::Debug;
+		mTextureCopyProgram = BuildProgram(
+										"uniform highp mat4 Mvpm;\n"
+										"attribute vec4 Position;\n"
+										"attribute vec2 TexCoord;\n"
+										"varying  highp vec2 oTexCoord;\n"
+										"void main()\n"
+										"{\n"
+										"   gl_Position = Position;\n"
+										"   oTexCoord = TexCoord;\n"
+										"}\n"
+										,
+										"#extension GL_OES_EGL_image_external : require\n"
+										"uniform samplerExternalOES Texture0;\n"
+										"varying highp vec2 oTexCoord;\n"
+										"void main()\n"
+										"{\n"
+										"	gl_FragColor = texture2D( Texture0, oTexCoord );\n"
+										"}\n",
+										   ErrorStream
+										);
+
+	}
+	*/
+
+	GLint FrameBufferId = 0;	//	screen
+	glBindFramebuffer( GL_FRAMEBUFFER, FrameBufferId );
+	auto FrameBufferSize = GetFrameBufferSize( FrameBufferId );
 	
+	std::Debug << "Frame buffer size: " << FrameBufferSize.x << "x" << FrameBufferSize.y << std::endl;
+	
+	//	set viewport (scissor so we see the real area)
+	glViewport( 0, 0, FrameBufferSize.x, FrameBufferSize.y );
+//	glScissor( 0, 0, FrameBufferSize.x, FrameBufferSize.y );
 	glClearColor(0.8, 0.4, 0.3, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
-	glColor3f(1.0f, 0.85f, 0.35f);
-	glBegin(GL_TRIANGLES);
+
+	
+	
+	if ( mTextureCopyProgram.IsValid() )
 	{
-		glVertex3f(  0.0,  0.6, 0.0);
-		glVertex3f( -0.2, -0.3, 0.0);
-		glVertex3f(  0.2, -0.3 ,0.0);
+		glUseProgram( mTextureCopyProgram.program );
+//	UnitSquare.Draw();
+		glUseProgram( 0 );
 	}
-	glEnd();
+
+	
+	//	render quad with texture
+	if ( mTexture.IsValid() )
+	{
+		glColor3f(1.f,1.f,1.f);
+		glBindTexture( GL_TEXTURE, mTexture.GetInteger() );
+		glBegin(GL_QUADS);
+		{
+			glVertex3f(  0.0,  0.0, 0.0	);
+			glTexCoord2f(  0.0,  0.0	);
+			
+			glVertex3f(  1.0,  0.0, 0.0	);
+			glTexCoord2f(  1.0,  0.0	);
+			
+			glVertex3f(  1.0,  1.0, 0.0	);
+			glTexCoord2f(  1.0,  1.0	);
+
+			glVertex3f(  0.0,  1.0, 0.0	);
+			glTexCoord2f(  0.0,  1.0	);
+		}
+		glBindTexture( GL_TEXTURE, 0 );
+		glEnd();
+	}
+	else
+	{
+		glColor3f(1.0f, 0.f, 0.f);
+		glBegin(GL_TRIANGLES);
+		{
+			glVertex3f(  0.0,  0.6, 0.0);
+			glVertex3f( -0.2, -0.3, 0.0);
+			glVertex3f(  0.2, -0.3 ,0.0);
+		}
+		glEnd();
+	}
 }
 
