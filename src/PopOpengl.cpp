@@ -12,7 +12,7 @@
 #include <SortArray.h>
 #include <TChannelLiteral.h>
 #include "TTextureWindow.h"
-
+#include <TChannelFile.h>
 
 
 void Soy::TOpenglDevice::MakeTestTexture(SoyPixels& Pixels,std::stringstream& Error)
@@ -138,131 +138,49 @@ void TPopOpengl::OnMakeWindow(TJobAndChannel &JobAndChannel)
 
 
 
-//	horrible global for lambda
-std::shared_ptr<TChannel> gStdioChannel;
-std::shared_ptr<TChannel> gCaptureChannel;
-static std::shared_ptr<TPopOpengl> gApp;
+//	keep alive after PopMain()
+#if defined(TARGET_OSX_BUNDLE)
+std::shared_ptr<TPopOpengl> gOpenglApp;
+#endif
 
-#include "TOpenglWindow.h"
 
 TPopAppError::Type PopMain(TJobParams& Params)
 {
 	std::cout << Params << std::endl;
 	
-	gApp.reset( new TPopOpengl() );
-	auto& App = *gApp;
+	gOpenglApp.reset( new TPopOpengl );
+	auto& App = *gOpenglApp;
 
 	auto CommandLineChannel = std::shared_ptr<TChan<TChannelLiteral,TProtocolCli>>( new TChan<TChannelLiteral,TProtocolCli>( SoyRef("cmdline") ) );
 	
 	//	create stdio channel for commandline output
-	gStdioChannel = CreateChannelFromInputString("std:", SoyRef("stdio") );
+	auto StdioChannel = CreateChannelFromInputString("std:", SoyRef("stdio") );
 	auto HttpChannel = CreateChannelFromInputString("http:8080-8090", SoyRef("http") );
-	auto WebSocketChannel = CreateChannelFromInputString("ws:json:9090-9099", SoyRef("websock") );
-//	auto WebSocketChannel = CreateChannelFromInputString("ws:cli:9090-9099", SoyRef("websock") );
-	auto SocksChannel = CreateChannelFromInputString("cli:7090-7099", SoyRef("socks") );
 	
 	
 	App.AddChannel( CommandLineChannel );
-	App.AddChannel( gStdioChannel );
+	App.AddChannel( StdioChannel );
 	App.AddChannel( HttpChannel );
-	App.AddChannel( WebSocketChannel );
-	App.AddChannel( SocksChannel );
 
+	
+	
+	
+	
+	//	bootup commands via a channel
+	std::shared_ptr<TChannel> BootupChannel( new TChan<TChannelFileRead,TProtocolCli>( SoyRef("Bootup"), "bootup.txt" ) );
+	/*
+	//	display reply to stdout
 	//	when the commandline SENDs a command (a reply), send it to stdout
 	auto RelayFunc = [](TJobAndChannel& JobAndChannel)
 	{
-		if ( !gStdioChannel )
-			return;
-		TJob Job = JobAndChannel;
-		Job.mChannelMeta.mChannelRef = gStdioChannel->GetChannelRef();
-		Job.mChannelMeta.mClientRef = SoyRef();
-		gStdioChannel->SendCommand( Job );
+		std::Debug << JobAndChannel.GetJob().mParams << std::endl;
 	};
-	CommandLineChannel->mOnJobSent.AddListener( RelayFunc );
+	//BootupChannel->mOnJobRecieved.AddListener( RelayFunc );
+	BootupChannel->mOnJobSent.AddListener( RelayFunc );
+	BootupChannel->mOnJobLost.AddListener( RelayFunc );
+	*/
+	App.AddChannel( BootupChannel );
 	
-	//	connect to another app, and subscribe to frames
-	bool CreateCaptureChannel = false;
-	if ( CreateCaptureChannel )
-	{
-		auto CaptureChannel = CreateChannelFromInputString("cli://localhost:7070", SoyRef("capture") );
-		gCaptureChannel = CaptureChannel;
-		CaptureChannel->mOnJobRecieved.AddListener( RelayFunc );
-		App.AddChannel( CaptureChannel );
-		
-		//	send commands from stdio to new channel
-		auto SendToCaptureFunc = [](TJobAndChannel& JobAndChannel)
-		{
-			TJob Job = JobAndChannel;
-			Job.mChannelMeta.mChannelRef = gStdioChannel->GetChannelRef();
-			Job.mChannelMeta.mClientRef = SoyRef();
-			gCaptureChannel->SendCommand( Job );
-		};
-		gStdioChannel->mOnJobRecieved.AddListener( SendToCaptureFunc );
-		
-		auto StartSubscription = [](TChannel& Channel)
-		{
-			TJob GetFrameJob;
-			GetFrameJob.mChannelMeta.mChannelRef = Channel.GetChannelRef();
-			//GetFrameJob.mParams.mCommand = "subscribenewframe";
-			//GetFrameJob.mParams.AddParam("serial", "isight" );
-			GetFrameJob.mParams.mCommand = "getframe";
-			GetFrameJob.mParams.AddParam("serial", "isight" );
-			GetFrameJob.mParams.AddParam("memfile", "1" );
-			Channel.SendCommand( GetFrameJob );
-		};
-		
-		CaptureChannel->mOnConnected.AddListener( StartSubscription );
-	}
-	
-	
-	/*
-	std::string TestFilename = "/users/grahamr/Desktop/ringo.png";
-	
-	//	gr: bootup commands
-	auto BootupGet = [TestFilename](TChannel& Channel)
-	{
-		TJob GetFrameJob;
-		GetFrameJob.mChannelMeta.mChannelRef = Channel.GetChannelRef();
-		GetFrameJob.mParams.mCommand = "getfeature";
-		GetFrameJob.mParams.AddParam("x", 120 );
-		GetFrameJob.mParams.AddParam("y", 120 );
-		GetFrameJob.mParams.AddParam("image", TestFilename, TJobFormat("text/file/png") );
-		Channel.OnJobRecieved( GetFrameJob );
-	};
-	
-	auto BootupMatch = [TestFilename](TChannel& Channel)
-	{
-		TJob GetFrameJob;
-		GetFrameJob.mChannelMeta.mChannelRef = Channel.GetChannelRef();
-		GetFrameJob.mParams.mCommand = "findfeature";
-		GetFrameJob.mParams.AddParam("feature", "01011000000000001100100100000000" );
-		GetFrameJob.mParams.AddParam("image", TestFilename, TJobFormat("text/file/png") );
-		Channel.OnJobRecieved( GetFrameJob );
-	};
-	
-
-	//	auto BootupFunc = BootupMatch;
-	//auto BootupFunc = BootupGet;
-	auto BootupFunc = BootupMatch;
-	if ( CommandLineChannel->IsConnected() )
-		BootupFunc( *CommandLineChannel );
-	else
-		CommandLineChannel->mOnConnected.AddListener( BootupFunc );
-*/
-
-	static bool MakeWindowTest = true;
-	if ( MakeWindowTest )
-	{
-		auto& Channel = *CommandLineChannel;
-		TJob Job;
-		Job.mChannelMeta.mChannelRef = Channel.GetChannelRef();
-		Job.mParams.mCommand = "makewindow";
-		Job.mParams.AddParam("name", "hello" );
-		
-		//	gr: err how is this not send command?
-		Channel.Execute( Job.mParams.mCommand, Job.mParams );
-		//Channel.SendCommand( Job );
-	}
 
 
 #if !defined(TARGET_OSX_BUNDLE)

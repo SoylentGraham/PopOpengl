@@ -18,6 +18,18 @@ TTextureWindow::TTextureWindow(std::string Name,vec2f Position,vec2f Size,std::s
 
 	mWindow->mOnRender.AddListener(*this,&TTextureWindow::OnOpenglRender);
 }
+
+TTextureWindow::~TTextureWindow()
+{
+	if ( mWindow )
+	{
+		mWindow->WaitToFinish();
+		mWindow.reset();
+	}
+	
+	mDevice.reset();
+}
+
 	
 void TTextureWindow::SetTexture(const SoyPixelsImpl& Pixels)
 {

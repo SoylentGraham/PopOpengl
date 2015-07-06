@@ -99,6 +99,9 @@ TOpenglWindow::TOpenglWindow(const std::string& Name,vec2f Pos,vec2f Size,std::s
 
 TOpenglWindow::~TOpenglWindow()
 {
+		std::Debug << __func__ << std::endl;
+	mView.reset();
+	mMacWindow.reset();
 }
 	
 bool TOpenglWindow::IsValid()

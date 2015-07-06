@@ -11,6 +11,7 @@ class TTextureWindow
 {
 public:
 	TTextureWindow(std::string Name,vec2f Position,vec2f Size,std::stringstream& Error);
+	~TTextureWindow();
 	
 	bool		IsValid()			{	return mWindow!=nullptr;	}
 	
