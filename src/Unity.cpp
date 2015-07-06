@@ -55,14 +55,7 @@ PopUnity::PopUnity()
 
 void PopUnity::OnStopped()
 {
-	//	close all channels
-	for ( auto it=mChannels.begin();	it!=mChannels.end();	it++ )
-	{
-		auto& Channel = *it;
-		Channel->Shutdown();
-		Channel.reset();
-	}
-	mChannels.clear();
+	ShutdownChannels();
 }
 
 void PopUnity::OnDebug(const std::string& Debug)
@@ -100,10 +93,12 @@ void PopUnity::FlushDebugMessages(void (*LogFunc)(const char*))
 }
 
 
-void PopUnity::AddChannel(std::shared_ptr<TChannel> Channel)
+bool PopUnity::AddChannel(std::shared_ptr<TChannel> Channel)
 {
-	TChannelManager::AddChannel( Channel );
+	if ( !TChannelManager::AddChannel( Channel ) )
+		return false;
 	Channel->mOnJobRecieved.AddListener( *this, &PopUnity::OnJobRecieved );
+	return true;
 }
 
 void PopUnity::OnJobRecieved(TJobAndChannel& JobAndChannel)

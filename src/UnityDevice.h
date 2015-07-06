@@ -14,6 +14,9 @@
 //	enable for unity project, not for PopOpengl
 //#define ENABLE_GLEW
 
+#if defined(ENABLE_OPENGL) && !defined(SOY_OPENGL)
+	#error opengl not enabled in Soy
+#endif
 
 
 // If exported by a plugin, this function will be called when graphics device is created, destroyed,
@@ -150,7 +153,7 @@ namespace Unity
 			OpenGLES20Desktop,   // OpenGL ES 2.0 desktop variant (i.e. NaCl)
 			Count
 		};
-		BufferString<100>	ToString(Type DeviceType);
+		std::string	ToString(Type DeviceType);
 	};
 
 
@@ -323,11 +326,15 @@ public:
 class Unity::TTexture_Opengl : public Unity::TTexture
 {
 public:
-    TTexture_Opengl(GLuint TextureName=GL_INVALID_TEXTURE_NAME) :
-		TTexture    ( TextureName )
-    {
-    }
-    
+	TTexture_Opengl(GLuint TextureName=GL_INVALID_TEXTURE_NAME) :
+	TTexture    ( TextureName )
+	{
+	}
+	explicit TTexture_Opengl(const Unity::TTexture& Texture) :
+	TTexture    ( Texture.GetPointer() )
+	{
+	}
+	
 	GLuint			GetName()    {   return static_cast<GLuint>( GetInteger() );   }
 	bool			Bind(TUnityDevice_Opengl& Device);
 	bool			Unbind(TUnityDevice_Opengl& Device);

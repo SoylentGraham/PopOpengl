@@ -2,6 +2,7 @@
 #include "TOpenglWindow.h"
 #include "SoyOpengl.h"
 
+
 TTextureWindow::TTextureWindow(std::string Name,vec2f Position,vec2f Size,std::stringstream& Error)
 {
 	mWindow.reset( new TOpenglWindow( Name, Position, Size, Error ) );
@@ -26,30 +27,13 @@ void TTextureWindow::SetTexture(const SoyPixelsImpl& Pixels)
 	mPendingTexture.unlock();
 }
 
-bool HasOpenglError()
-{
-	auto Error = glGetError();
-	if ( Error != GL_NO_ERROR )
-	{
-		auto* pErrorString = reinterpret_cast<const char*>(glGetString( Error ));
-		std::string ErrorString;
-		if ( pErrorString )
-			ErrorString = pErrorString;
-		else
-			ErrorString = "Unknown error";
-		std::Debug << "opengl error #" << Error << " " << ErrorString << std::endl;
-		return true;
-	}
-
-	return false;
-}
 
 vec2f GetFrameBufferSize(GLint FrameBufferId)
 {
 	vec2f Error(200,200);
 
 	auto BindScope = SoyScope( [FrameBufferId]{ glBindRenderbuffer( GL_FRAMEBUFFER, FrameBufferId ); }, []{ glBindRenderbuffer( GL_FRAMEBUFFER, 0 ); } );
-	if ( HasOpenglError() )
+	if ( TUnityDevice_Opengl::HasError() )
 		return Error;
 
 	
@@ -58,7 +42,7 @@ vec2f GetFrameBufferSize(GLint FrameBufferId)
 
 	GLint FrameBufferObjectType;
 	glGetFramebufferAttachmentParameteriv( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE, &FrameBufferObjectType );
-	if ( HasOpenglError() )
+	if ( TUnityDevice_Opengl::HasError() )
 		return Error;
 	
 	
@@ -104,7 +88,7 @@ void TTextureWindow::OnOpenglRender(bool& Dummy)
 		if ( !mTexture.IsValid() )
 		{
 			SoyPixelsMetaFull Meta( mPendingTexture.GetWidth(), mPendingTexture.GetHeight(), mPendingTexture.GetFormat() );
-			mTexture = mDevice->AllocTexture( Meta );
+			mTexture = Unity::TTexture_Opengl( mDevice->AllocTexture( Meta ) );
 		}
 		mDevice->CopyTexture( mTexture, mPendingTexture, true, true );
 
@@ -167,7 +151,8 @@ void TTextureWindow::OnOpenglRender(bool& Dummy)
 	if ( mTexture.IsValid() )
 	{
 		glColor3f(1.f,1.f,1.f);
-		glBindTexture( GL_TEXTURE, mTexture.GetInteger() );
+		mTexture.Bind( *mDevice );
+		//glBindTexture( GL_TEXTURE_2D, mTexture.GetName() );
 		glBegin(GL_QUADS);
 		{
 			glVertex3f(  0.0,  0.0, 0.0	);

@@ -266,7 +266,7 @@ TFrameMeta TUnityDevice_Dx11::GetTextureMeta(Unity::TDynamicTexture Texture)
 #endif
 
 
-BufferString<100> Unity::TGfxDevice::ToString(Unity::TGfxDevice::Type DeviceType)
+std::string Unity::TGfxDevice::ToString(Unity::TGfxDevice::Type DeviceType)
 {
 	switch ( DeviceType )
 	{
@@ -283,7 +283,7 @@ BufferString<100> Unity::TGfxDevice::ToString(Unity::TGfxDevice::Type DeviceType
 		case Molehill:			return "Molehill/Flash 11";
 		case OpenGLES20Desktop:	return "OpenGL ES 2.0 desktop/NaCL";
 		default:
-			return BufferString<100>()<<"Unknown device " << static_cast<int>(DeviceType);
+			return Soy::StreamToString( std::stringstream()<<"Unknown device " << static_cast<int>(DeviceType) );
 	}
 }
 
@@ -1012,8 +1012,17 @@ bool TUnityDevice_Opengl::DeleteTexture(TOpenglBufferCache& Buffer)
 #endif
 
 #if defined(ENABLE_OPENGL)
-BufferString<100> OpenglError_ToString(GLenum Error)
+std::string OpenglError_ToString(GLenum Error)
 {
+	//	get the libraries string if provided
+	auto* pErrorString = reinterpret_cast<const char*>(glGetString( Error ));
+
+	if ( pErrorString )
+	{
+		std::string ErrorString = pErrorString;
+		return ErrorString;
+	}
+
 	switch ( Error )
 	{
 	case GL_NO_ERROR:			return "GL_NO_ERROR";
@@ -1024,7 +1033,11 @@ BufferString<100> OpenglError_ToString(GLenum Error)
 	case GL_STACK_UNDERFLOW:	return "GL_STACK_UNDERFLOW";
 	case GL_OUT_OF_MEMORY:		return "GL_OUT_OF_MEMORY";
 	default:
-		return BufferString<100>() << "Unknown GL error [" << static_cast<int>(Error) << "]";
+		{
+			std::stringstream ErrorString;
+			ErrorString << "Unknown GL error [" << static_cast<int>(Error) << "]";
+			return ErrorString.str();
+		}
 	}
 }
 #endif

@@ -47,7 +47,8 @@ SoyContextLock::SoyContextLock(std::mutex& Mutex)
 
 
 TPopOpengl::TPopOpengl() :
-	TJobHandler	( static_cast<TChannelManager&>(*this) )
+	TJobHandler		( static_cast<TChannelManager&>(*this) ),
+	TPopJobHandler	( static_cast<TJobHandler&>(*this) )
 {
 	AddJobHandler("exit", TParameterTraits(), *this, &TPopOpengl::OnExit );
 
@@ -58,12 +59,14 @@ TPopOpengl::TPopOpengl() :
 	AddJobHandler("makewindow", MakeWindowTraits, *this, &TPopOpengl::OnMakeWindow );
 }
 
-void TPopOpengl::AddChannel(std::shared_ptr<TChannel> Channel)
+bool TPopOpengl::AddChannel(std::shared_ptr<TChannel> Channel)
 {
-	TChannelManager::AddChannel( Channel );
+	if ( !TChannelManager::AddChannel( Channel ) )
+		return false;
 	if ( !Channel )
-		return;
+		return false;
 	TJobHandler::BindToChannel( *Channel );
+	return true;
 }
 
 

@@ -82,12 +82,12 @@ public:
 
 
 
-class TPopOpengl : public TJobHandler, public TChannelManager
+class TPopOpengl : public TJobHandler, public TPopJobHandler, public TChannelManager
 {
 public:
 	TPopOpengl();
 	
-	virtual void	AddChannel(std::shared_ptr<TChannel> Channel) override;
+	virtual bool	AddChannel(std::shared_ptr<TChannel> Channel) override;
 
 	void			OnExit(TJobAndChannel& JobAndChannel);
 	void			OnMakeTestTexture(TJobAndChannel& JobAndChannel);

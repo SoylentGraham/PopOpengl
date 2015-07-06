@@ -73,7 +73,7 @@ public:
 public:
 	PopUnity();
 
-	virtual void	AddChannel(std::shared_ptr<TChannel> Channel) override;
+	virtual bool	AddChannel(std::shared_ptr<TChannel> Channel) override;
 
 	void			FlushDebugMessages(void (*LogFunc)(const char*));
 	void			OnDebug(const std::string& Debug);

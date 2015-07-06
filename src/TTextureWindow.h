@@ -19,7 +19,7 @@ public:
 
 private:
 	GlProgram			mTextureCopyProgram;
-	Unity::TTexture		mTexture;
+	Unity::TTexture_Opengl		mTexture;
 	std::shared_ptr<TUnityDevice_Opengl>	mDevice;	//	device for window's context
 	std::shared_ptr<TOpenglWindow>	mWindow;
 	ofMutexT<SoyPixels>	mPendingTexture;
