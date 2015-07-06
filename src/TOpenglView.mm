@@ -70,10 +70,12 @@ TOpenglView::~TOpenglView()
 	
 	//	gr: assuming here it's already switched??
 	Context.Lock();
+	/*
 	GLint RenderBufferName = -1;
 	glGetIntegerv( GL_RENDERBUFFER_BINDING, &RenderBufferName );
 	Opengl::IsOkay("glget GL_RENDERBUFFER_BINDING");
 	std::Debug <<"Render buffer name is " << RenderBufferName << std::endl;
+	 */
 	Context.Unlock();
 	
 	//	do parent's minimal render

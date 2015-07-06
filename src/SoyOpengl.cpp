@@ -228,6 +228,7 @@ Opengl::TRenderTargetFbo::TRenderTargetFbo(TFboMeta Meta,Opengl::TContext& Conte
 	{
 		//	make a texture
 		glGenTextures(1, &mTexture.mTexture.mName );
+		Opengl_IsOkay();
 
 		//	set texture params and it's reset in the TFbo constructr (this is wrong!)
 		mTexture.mMeta = SoyPixelsMetaFull( Meta.mSize.x, Meta.mSize.y, SoyPixelsFormat::RGBA );
@@ -286,7 +287,7 @@ Opengl::TFbo::TFbo(TTexture Texture) :
 	
 	//	gr: get format from meta
 	auto FboTexureFormat = GL_RGBA;
-	glActiveTexture( GL_TEXTURE1 );
+	//glActiveTexture( GL_TEXTURE1 );
 	glBindTexture( GL_TEXTURE_2D, mFboTextureName );
 	Opengl::IsOkay("FBO glBindTexture");
 	
@@ -305,7 +306,7 @@ Opengl::TFbo::TFbo(TTexture Texture) :
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 	glBindTexture( GL_TEXTURE_2D, 0 );
 	Opengl::IsOkay("FBO UN glBindTexture");
-	glActiveTexture( GL_TEXTURE0 );
+	//glActiveTexture( GL_TEXTURE0 );
 	
 	glGenFramebuffers( 1, &mFbo.mName );
 	Opengl::IsOkay("FBO glGenFramebuffers");
@@ -548,8 +549,7 @@ void Opengl::TTexture::Delete()
 bool Opengl::TTexture::Bind()
 {
 	glBindTexture( GL_TEXTURE_2D, mTexture.mName );
-	Opengl_IsOkay();
-	return true;
+	return Opengl_IsOkay();
 }
 
 void Opengl::TTexture::Unbind()

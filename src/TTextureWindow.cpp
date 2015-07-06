@@ -142,13 +142,11 @@ void TTextureWindow::OnOpenglRender(Opengl::TRenderTarget& RenderTarget)
 	auto FrameBufferSize = RenderTarget.GetSize();
 	
 	std::Debug << "Frame buffer size: " << FrameBufferSize.x << "x" << FrameBufferSize.y << std::endl;
-	
 	//	set viewport (scissor so we see the real area)
 	glViewport( 0, 0, FrameBufferSize.x, FrameBufferSize.y );
 	//glScissor( 0, 0, FrameBufferSize.x, FrameBufferSize.y );
 	glClearColor( 0, 0, 1, 1 );
 	glClear(GL_COLOR_BUFFER_BIT);
-
 	
 	
 	if ( mTextureCopyProgram.IsValid() )
@@ -156,8 +154,8 @@ void TTextureWindow::OnOpenglRender(Opengl::TRenderTarget& RenderTarget)
 		glUseProgram( mTextureCopyProgram.program );
 //	UnitSquare.Draw();
 		glUseProgram( 0 );
+		Opengl_IsOkay();
 	}
-
 	
 	//	render all render target textures
 	Soy::Rectf Rect( 0,0,1,1 );
@@ -169,8 +167,11 @@ void TTextureWindow::OnOpenglRender(Opengl::TRenderTarget& RenderTarget)
 		if ( !Texture.IsValid() )
 			continue;
 
-		glColor3f(1,1,1);
 		if ( Texture.Bind() )
+			glColor3f(1,1,1);
+		else
+			glColor3f(1,0,0);
+
 		{
 			glBegin(GL_QUADS);
 			{
@@ -186,8 +187,8 @@ void TTextureWindow::OnOpenglRender(Opengl::TRenderTarget& RenderTarget)
 				glVertex3f( Rect.Left(), Rect.Bottom(), z	);
 				glTexCoord2f(  0.0,  1.0	);
 			}
-			Texture.Unbind();
 			glEnd();
+			Texture.Unbind();
 		}
 		
 		Rect.y += Rect.h;
@@ -205,6 +206,7 @@ void TTextureWindow::OnOpenglRender(Opengl::TRenderTarget& RenderTarget)
 		glEnd();
 	}
 	 */
+	Opengl_IsOkay();
 }
 
 Opengl::TContext* TTextureWindow::GetContext()
