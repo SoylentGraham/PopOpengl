@@ -272,9 +272,9 @@ public:
 	}
 	virtual ~TRenderTarget()	{}
 	
-	virtual bool			Bind()=0;
-	virtual void			Unbind()=0;
-	virtual vec2x<GLint>	GetSize()=0;
+	virtual bool				Bind()=0;
+	virtual void				Unbind()=0;
+	virtual Soy::Rectx<size_t>	GetSize()=0;
 	
 	std::string		mName;
 };
@@ -481,10 +481,10 @@ public:
 		mTexture.Delete();
 	}
 	
-	virtual bool			Bind();
-	virtual void			Unbind();
-	virtual vec2x<GLint>	GetSize();
-	TTexture				GetTexture();
+	virtual bool				Bind();
+	virtual void				Unbind();
+	virtual Soy::Rectx<size_t>	GetSize();
+	TTexture					GetTexture();
 	
 	std::shared_ptr<TFbo>	mFbo;
 	TTexture				mTexture;

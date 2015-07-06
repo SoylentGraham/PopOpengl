@@ -79,8 +79,12 @@ TOpenglView::~TOpenglView()
 	Context.Unlock();
 	
 	//	do parent's minimal render
-	auto ParentRender = [self]()
+	auto ParentRender = [self,bounds]()
 	{
+		mParent->mRenderTarget.mRect.x = bounds.origin.x;
+		mParent->mRenderTarget.mRect.y = bounds.origin.y;
+		mParent->mRenderTarget.mRect.w = bounds.size.width;
+		mParent->mRenderTarget.mRect.h = bounds.size.height;
 		if ( !mParent->mRenderTarget.Bind() )
 			return false;
 		//	gr: don't really wanna send the context here I don't think.... probably wanna send render target
@@ -111,22 +115,9 @@ TOpenglView::~TOpenglView()
 @end
 
 
-
-vec2x<GLint> GlViewRenderTarget::GetSize()
-{
-	return vec2x<GLint>(100,100);
-	//	gr: don't know what renderer is :/
-	vec2x<GLint> wh(0,0);
-	glGetRenderbufferParameteriv( GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &wh.x );
-	Opengl_IsOkay();
-	glGetRenderbufferParameteriv( GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &wh.y );
-	Opengl_IsOkay();
-	return wh;
-}
-
 bool GlViewRenderTarget::Bind()
 {
-	//	todo;
+	//	gr: maybe need to work out how to bind to the default render target rather than relying on others to unbind
 	return true;
 }
 

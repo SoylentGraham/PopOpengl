@@ -273,9 +273,9 @@ void Opengl::TRenderTargetFbo::Unbind()
 	mFbo->Unbind();
 }
 
-vec2x<GLint> Opengl::TRenderTargetFbo::GetSize()
+Soy::Rectx<size_t> Opengl::TRenderTargetFbo::GetSize()
 {
-	return vec2x<GLint>(0,0);
+	return Soy::Rectx<size_t>(0,0,mTexture.mMeta.GetWidth(),mTexture.mMeta.GetHeight());
 }
 
 Opengl::TTexture Opengl::TRenderTargetFbo::GetTexture()

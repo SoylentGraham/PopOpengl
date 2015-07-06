@@ -26,9 +26,11 @@ public:
 	{
 	}
 	
-	virtual vec2x<GLint>	GetSize() override;
-	virtual bool			Bind() override;
-	virtual void			Unbind() override;
+	virtual Soy::Rectx<size_t>	GetSize() override	{	return mRect;	}
+	virtual bool				Bind() override;
+	virtual void				Unbind() override;
+	
+	Soy::Rectx<size_t>			mRect;
 };
 
 class GlViewContext : public Opengl::TContext
