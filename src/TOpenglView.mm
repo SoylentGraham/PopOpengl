@@ -81,16 +81,12 @@ TOpenglView::~TOpenglView()
 	//	do parent's minimal render
 	auto ParentRender = [self]()
 	{
-		if ( !mParent )
-		{
-			Opengl::Clear( Soy::TRgb(0,0,1) );
-		}
-		else
-		{
-			//	gr: don't really wanna send the context here I don't think.... probably wanna send render target
-			Opengl::Clear( Soy::TRgb(0,1,0) );
-			mParent->mOnRender.OnTriggered( mParent->mRenderTarget );
-		}
+		if ( !mParent->mRenderTarget.Bind() )
+			return false;
+		//	gr: don't really wanna send the context here I don't think.... probably wanna send render target
+		Opengl::Clear( Soy::TRgb(0,1,0) );
+		mParent->mOnRender.OnTriggered( mParent->mRenderTarget );
+		mParent->mRenderTarget.Unbind();
 		return true;
 	};
 	
@@ -132,6 +128,11 @@ bool GlViewRenderTarget::Bind()
 {
 	//	todo;
 	return true;
+}
+
+
+void GlViewRenderTarget::Unbind()
+{
 }
 
 bool GlViewContext::Lock()

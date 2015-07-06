@@ -228,6 +228,11 @@ Opengl::TRenderTargetFbo::TRenderTargetFbo(TFboMeta Meta,Opengl::TContext& Conte
 	{
 		//	make a texture
 		glGenTextures(1, &mTexture.mTexture.mName );
+		//	set mip-map levels to 0..0
+		mTexture.Bind();
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+
 		Opengl_IsOkay();
 
 		//	set texture params and it's reset in the TFbo constructr (this is wrong!)
@@ -258,6 +263,14 @@ bool Opengl::TRenderTargetFbo::Bind()
 	if ( !mFbo )
 		return false;
 	return mFbo->Bind();
+}
+
+void Opengl::TRenderTargetFbo::Unbind()
+{
+	if ( !mFbo )
+		return;
+	
+	mFbo->Unbind();
 }
 
 vec2x<GLint> Opengl::TRenderTargetFbo::GetSize()
@@ -314,6 +327,16 @@ Opengl::TFbo::TFbo(TTexture Texture) :
 	Opengl::IsOkay("FBO glBindFramebuffer2");
 	glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mFboTextureName, 0 );
 	Opengl::IsOkay("FBO glFramebufferTexture2D");
+	
+	//	gr: init? or render?
+	// Set the list of draw buffers.
+	GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
+	glDrawBuffers(1, DrawBuffers);
+	
+	//	caps check
+	auto FrameBufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	Soy::Assert( FrameBufferStatus == GL_FRAMEBUFFER_COMPLETE, "DIdn't complete framebuffer setup" );
+	
 	glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 	Opengl::IsOkay("FBO UN glBindTexture2");
 }
@@ -329,9 +352,37 @@ Opengl::TFbo::~TFbo()
 
 bool Opengl::TFbo::Bind()
 {
-	std::Debug << __func__ << " todo " << std::endl;
+	glBindFramebuffer(GL_FRAMEBUFFER, mFbo.mName );
+	Opengl_IsOkay();
+	glViewport( 0, 0, mTarget.mMeta.GetWidth(), mTarget.mMeta.GetHeight() );
+	Opengl_IsOkay();
+	
+	glClearColor( 0.5f, 0.5f, 0, 1 );
+	glClear( GL_COLOR_BUFFER_BIT );
+	Opengl_IsOkay();
+	
+	
+	 {
+		glColor3f(1.0f, 1.f, 0.f);
+		glBegin(GL_TRIANGLES);
+		{
+	 glVertex3f(  0.0,  0.6, 0.0);
+	 glVertex3f( -0.2, -0.3, 0.0);
+	 glVertex3f(  0.2, -0.3 ,0.0);
+		}
+		glEnd();
+	 }
+	Opengl_IsOkay();
+	
 	return true;
 }
+
+void Opengl::TFbo::Unbind()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	Opengl_IsOkay();
+}
+
 /*
 Opengl::TGeometry Opengl::BuildTesselatedQuad( const int horizontal, const int vertical )
 {

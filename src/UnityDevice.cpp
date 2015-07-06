@@ -483,6 +483,10 @@ Unity::TTexture TUnityDevice_Opengl::AllocTexture(SoyPixelsMetaFull FrameMeta)
 		DeleteTexture( Texture );
 		return Texture;
 	}
+	
+	//	set mip-map levels to 0..0
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 
 	//	initialise to set dimensions
 	SoyPixels InitFramePixels;

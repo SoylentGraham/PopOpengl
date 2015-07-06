@@ -29,4 +29,5 @@ private:
 	GlProgram			mTextureCopyProgram;
 	std::shared_ptr<TUnityDevice_Opengl>	mDevice;	//	device for window's context
 	std::shared_ptr<TOpenglWindow>	mWindow;
+	Opengl::TTexture	mTestTexture;
 };

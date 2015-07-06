@@ -28,6 +28,7 @@ public:
 	
 	virtual vec2x<GLint>	GetSize() override;
 	virtual bool			Bind() override;
+	virtual void			Unbind() override;
 };
 
 class GlViewContext : public Opengl::TContext

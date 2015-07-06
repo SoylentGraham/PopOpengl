@@ -97,6 +97,7 @@ public:
 	
 private:
 	Opengl::TContext*	GetContext(const std::string& Name);
+	std::shared_ptr<Opengl::TRenderTargetFbo>	GetRenderTarget(const std::string& Name);
 	
 public:
 	Soy::TOpenglDevice			mOpengl;

@@ -124,17 +124,7 @@ void TPopOpengl::OnMakeWindow(TJobAndChannel &JobAndChannel)
 		Channel.SendJobReply( Reply );
 		return;
 	}
-	
-	/*
-	SoyPixels TestTexture;
-	TestTexture.Init( 256, 256, SoyPixelsFormat::RGB );
-	BufferArray<char,3> Rgb;
-	Rgb.PushBack( 255 );
-	Rgb.PushBack( 0 );
-	Rgb.PushBack( 0 );
-	TestTexture.SetColour( GetArrayBridge(Rgb) );
-	pWindow->SetTexture( TestTexture );
-*/
+
 	mWindows.PushBack( pWindow );
 	TJobReply Reply(Job);
 	Reply.mParams.AddDefaultParam("OK");
@@ -165,13 +155,7 @@ void TPopOpengl::OnMakeRenderTarget(TJobAndChannel& JobAndChannel)
 	}
 	
 	
-	std::shared_ptr<Opengl::TRenderTargetFbo> RenderTarget;
-	for ( int i=0;	i<mRenderTargets.GetSize();	i++ )
-	{
-		//	todo: replace if new params
-		if ( mRenderTargets[i]->mName == Meta.mName )
-			RenderTarget = mRenderTargets[i];
-	}
+	std::shared_ptr<Opengl::TRenderTargetFbo> RenderTarget = GetRenderTarget( Meta.mName );
 	
 	std::stringstream ReplyString;
 	if ( !RenderTarget )
@@ -195,8 +179,68 @@ void TPopOpengl::OnMakeRenderTarget(TJobAndChannel& JobAndChannel)
 
 void TPopOpengl::OnClearRenderTarget(TJobAndChannel& JobAndChannel)
 {
+	auto& Job = JobAndChannel.GetJob();
+	auto Name = Job.mParams.GetParamAs<std::string>("name");
+	auto RgbStr = Job.mParams.GetParamAs<std::string>("rgb");
+	vec3f Rgb3(1,0,0);
+	Soy::StringToType( Rgb3, RgbStr );
+	Soy::TRgb Rgb( Rgb3.x, Rgb3.y, Rgb3.z );
+
+	//	get context
+	auto Context = GetContext( Job.mParams.GetParamAs<std::string>("context") );
+	if ( !Context )
+	{
+		TJobReply Reply(Job);
+		Reply.mParams.AddErrorParam("Could not get gl context");
+		auto& Channel = JobAndChannel.GetChannel();
+		Channel.SendJobReply( Reply );
+		return;
+	}
 	
+	auto RenderTarget = GetRenderTarget(Name);
+	if ( !RenderTarget )
+	{
+		TJobReply Reply(Job);
+		Reply.mParams.AddErrorParam(std::string("Could not find render target ")+Name);
+		auto& Channel = JobAndChannel.GetChannel();
+		Channel.SendJobReply( Reply );
+		return;
+	}
+	
+	//	queue some commands
+	auto BindAndClear = [&Rgb,&RenderTarget]()
+	{
+		RenderTarget->Bind();
+		glClearColor( Rgb.r(), Rgb.g(), Rgb.b(), 1 );
+		glClear( GL_COLOR_BUFFER_BIT );
+		RenderTarget->Unbind();
+		
+		return true;
+	};
+	
+	Context->PushJob( BindAndClear );
+	
+	//	flush so lambda variables dont go out of scope
+	Context->FlushJobs();
+
+	TJobReply Reply(Job);
+	Reply.mParams.AddDefaultParam("Cleared!");
+	auto& Channel = JobAndChannel.GetChannel();
+	Channel.SendJobReply( Reply );
 }
+
+std::shared_ptr<Opengl::TRenderTargetFbo> TPopOpengl::GetRenderTarget(const std::string& Name)
+{
+	for ( int i=0;	i<mRenderTargets.GetSize();	i++ )
+	{
+		//	todo: replace if new params
+		if ( mRenderTargets[i]->mName == Name )
+			return mRenderTargets[i];
+	}
+	
+	return nullptr;
+}
+
 
 Opengl::TContext* TPopOpengl::GetContext(const std::string& Name)
 {
