@@ -6,22 +6,27 @@
 #include "SoyOpengl.h"
 
 class TOpenglWindow;
+class TPopOpengl;
+
+namespace Opengl
+{
+	class TContext;
+};
 
 class TTextureWindow
 {
 public:
-	TTextureWindow(std::string Name,vec2f Position,vec2f Size,std::stringstream& Error);
+	TTextureWindow(std::string Name,vec2f Position,vec2f Size,TPopOpengl& Parent);
 	~TTextureWindow();
 	
-	bool		IsValid()			{	return mWindow!=nullptr;	}
+	bool				IsValid()			{	return mWindow!=nullptr;	}
 	
-	void		SetTexture(const SoyPixelsImpl& Pixels);
-	void		OnOpenglRender(Opengl::TRenderTarget& RenderTarget);
-
+	void				OnOpenglRender(Opengl::TRenderTarget& RenderTarget);
+	Opengl::TContext*	GetContext();
+	
 private:
+	TPopOpengl&			mParent;
 	GlProgram			mTextureCopyProgram;
-	Unity::TTexture_Opengl		mTexture;
 	std::shared_ptr<TUnityDevice_Opengl>	mDevice;	//	device for window's context
 	std::shared_ptr<TOpenglWindow>	mWindow;
-	ofMutexT<SoyPixels>	mPendingTexture;
 };

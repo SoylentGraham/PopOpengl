@@ -15,7 +15,7 @@ class TOpenglView;
 class TOpenglWindow : public SoyWorkerThread
 {
 public:
-	TOpenglWindow(const std::string& Name,vec2f Pos,vec2f Size,std::stringstream& Error);
+	TOpenglWindow(const std::string& Name,vec2f Pos,vec2f Size);
 	~TOpenglWindow();
 	
 	bool			Redraw();	//	trigger a redraw
@@ -26,7 +26,9 @@ public:
 		Redraw();
 		return true;
 	}
-
+	
+	Opengl::TContext*	GetContext();
+	
 private:
 	void			OnViewRender(Opengl::TRenderTarget& RenderTarget)
 	{

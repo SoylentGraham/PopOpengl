@@ -3,7 +3,7 @@
 #include <SoyApp.h>
 #include <TJob.h>
 #include <TChannel.h>
-
+#include "SoyOpengl.h"
 
 class TTextureWindow;
 
@@ -92,12 +92,18 @@ public:
 	void			OnExit(TJobAndChannel& JobAndChannel);
 	void			OnMakeTestTexture(TJobAndChannel& JobAndChannel);
 	void			OnMakeWindow(TJobAndChannel& JobAndChannel);
+	void			OnMakeRenderTarget(TJobAndChannel& JobAndChannel);
+	void			OnClearRenderTarget(TJobAndChannel& JobAndChannel);
+	
+private:
+	Opengl::TContext*	GetContext(const std::string& Name);
 	
 public:
 	Soy::TOpenglDevice			mOpengl;
 	Soy::Platform::TConsoleApp	mConsoleApp;
 	
 	Array<std::shared_ptr<TTextureWindow>>	mWindows;
+	Array<std::shared_ptr<Opengl::TRenderTargetFbo>>	mRenderTargets;	//
 };
 
 

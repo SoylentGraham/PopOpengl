@@ -1,11 +1,13 @@
 #include "TTextureWindow.h"
 #include "TOpenglWindow.h"
 #include "SoyOpengl.h"
+#include "PopOpengl.h"
 
 
-TTextureWindow::TTextureWindow(std::string Name,vec2f Position,vec2f Size,std::stringstream& Error)
+TTextureWindow::TTextureWindow(std::string Name,vec2f Position,vec2f Size,TPopOpengl& Parent) :
+	mParent		( Parent )
 {
-	mWindow.reset( new TOpenglWindow( Name, Position, Size, Error ) );
+	mWindow.reset( new TOpenglWindow( Name, Position, Size ) );
 	if ( !mWindow->IsValid() )
 	{
 		mWindow.reset();
@@ -28,15 +30,6 @@ TTextureWindow::~TTextureWindow()
 	}
 	
 	mDevice.reset();
-}
-
-	
-void TTextureWindow::SetTexture(const SoyPixelsImpl& Pixels)
-{
-	//	buffer for next render to copy
-	mPendingTexture.lock();
-	mPendingTexture.Copy( Pixels );
-	mPendingTexture.unlock();
 }
 
 
@@ -152,8 +145,8 @@ void TTextureWindow::OnOpenglRender(Opengl::TRenderTarget& RenderTarget)
 	
 	//	set viewport (scissor so we see the real area)
 	glViewport( 0, 0, FrameBufferSize.x, FrameBufferSize.y );
-	glScissor( 0, 0, FrameBufferSize.x, FrameBufferSize.y );
-	glClearColor(0.8, 0.4, 0.3, 1.0);
+	//glScissor( 0, 0, FrameBufferSize.x, FrameBufferSize.y );
+	glClearColor( 0, 0, 1, 1 );
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	
@@ -166,31 +159,41 @@ void TTextureWindow::OnOpenglRender(Opengl::TRenderTarget& RenderTarget)
 	}
 
 	
-	//	render quad with texture
-	if ( mTexture.IsValid() )
+	//	render all render target textures
+	Soy::Rectf Rect( 0,0,1,1 );
+	float z = 0;
+	for ( int rt=0;	rt<mParent.mRenderTargets.GetSize();	rt++ )
 	{
-		glColor3f(1.f,0.f,1.f);
-		//if ( mTexture.Bind( *mDevice ) )
+		auto& RenderTarget = *mParent.mRenderTargets[rt];
+		auto Texture = RenderTarget.GetTexture();
+		if ( !Texture.IsValid() )
+			continue;
+
+		glColor3f(1,1,1);
+		if ( Texture.Bind() )
 		{
 			glBegin(GL_QUADS);
 			{
-				glVertex3f(  0.0,  0.0, 0.0	);
+				glVertex3f(  Rect.Left(), Rect.Top(), z );
 				glTexCoord2f(  0.0,  0.0	);
 				
-				glVertex3f(  1.0,  0.0, 0.0	);
+				glVertex3f( Rect.Right(), Rect.Top(), z	);
 				glTexCoord2f(  1.0,  0.0	);
 				
-				glVertex3f(  1.0,  1.0, 0.0	);
+				glVertex3f( Rect.Right(), Rect.Bottom(), z	);
 				glTexCoord2f(  1.0,  1.0	);
 
-				glVertex3f(  0.0,  1.0, 0.0	);
+				glVertex3f( Rect.Left(), Rect.Bottom(), z	);
 				glTexCoord2f(  0.0,  1.0	);
 			}
-			glBindTexture( GL_TEXTURE, 0 );
+			Texture.Unbind();
 			glEnd();
 		}
+		
+		Rect.y += Rect.h;
 	}
-	else
+	
+	/*
 	{
 		glColor3f(1.0f, 1.f, 0.f);
 		glBegin(GL_TRIANGLES);
@@ -201,5 +204,13 @@ void TTextureWindow::OnOpenglRender(Opengl::TRenderTarget& RenderTarget)
 		}
 		glEnd();
 	}
+	 */
 }
 
+Opengl::TContext* TTextureWindow::GetContext()
+{
+	if ( !mWindow )
+		return nullptr;
+	
+	return mWindow->GetContext();
+}

@@ -58,19 +58,30 @@ TOpenglView::~TOpenglView()
 
 -(void) drawRect: (NSRect) bounds
 {
-	//	render callback, probbaly on main thread
+	//	render callback from OS, always on main thread?
+	if ( !mParent )
+	{
+		Opengl::Clear( Soy::TRgb(1,0,0) );
+		return;
+	}
 	
+	//	lock the context
+	auto& Context = mParent->mContext;
+	
+	//	gr: assuming here it's already switched??
+	Context.Lock();
 	GLint RenderBufferName = -1;
 	glGetIntegerv( GL_RENDERBUFFER_BINDING, &RenderBufferName );
 	Opengl::IsOkay("glget GL_RENDERBUFFER_BINDING");
 	std::Debug <<"Render buffer name is " << RenderBufferName << std::endl;
+	Context.Unlock();
 	
 	//	do parent's minimal render
 	auto ParentRender = [self]()
 	{
 		if ( !mParent )
 		{
-			Opengl::Clear( Soy::TRgb(1,0,0) );
+			Opengl::Clear( Soy::TRgb(0,0,1) );
 		}
 		else
 		{
@@ -91,11 +102,12 @@ TOpenglView::~TOpenglView()
 	
 	//	Run through our contexts jobs, then do a render and a flip, by queueing correctly.
 	
-	mParent->mContext.PushJob( ParentRender );
+	Context.PushJob( ParentRender );
 	//	flush all commands before another thread uses this context.... maybe put this in context unlock()
-	mParent->mContext.PushJob( []{glFlush();return true;} );
-	mParent->mContext.PushJob( BufferFlip );
-	mParent->mContext.Iteration();
+	Context.PushJob( []{glFlush();return true;} );
+	Context.PushJob( BufferFlip );
+	Context.Iteration();
+	
 }
 
 @end
@@ -114,19 +126,28 @@ vec2x<GLint> GlViewRenderTarget::GetSize()
 	return wh;
 }
 
+bool GlViewRenderTarget::Bind()
+{
+	//	todo;
+	return true;
+}
 
 bool GlViewContext::Lock()
 {
 	if ( !mParent.mView )
 		return false;
 	
+	auto ContextObj = [mParent.mView.openGLContext CGLContextObj];
+	CGLLockContext( ContextObj );
 	[mParent.mView.openGLContext makeCurrentContext];
 	return true;
 }
 
 void GlViewContext::Unlock()
 {
-	//	leaves artifacts everywhere
+	auto ContextObj = [mParent.mView.openGLContext CGLContextObj];
+	CGLUnlockContext( ContextObj );
+//	leaves artifacts everywhere
 	//[mParent.mView.openGLContext flushBuffer];
 }
 

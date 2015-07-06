@@ -270,27 +270,6 @@ public:
 };
 #endif
 
-class SoyPixelsMetaFull : public SoyPixelsMeta
-{
-public:
-	SoyPixelsMetaFull() :
-		mDataSize	( 0 )
-	{
-	}
-	SoyPixelsMetaFull(int Width,int Height,SoyPixelsFormat::Type Format)
-	{
-		mWidth = Width;
-		mFormat = Format;
-		mDataSize = SoyPixelsMeta::GetDataSize(Height);
-	}
-
-	uint16		GetHeight() const		{	return SoyPixelsMeta::GetHeight( GetDataSize() );	}
-	size_t		GetDataSize() const		{	return mDataSize;	}
-
-public:
-	size_t		mDataSize;
-};
-
 #if defined(ENABLE_OPENGL)
 class TOpenglBufferCache
 {

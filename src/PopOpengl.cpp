@@ -57,6 +57,15 @@ TPopOpengl::TPopOpengl() :
 	TParameterTraits MakeWindowTraits;
 	MakeWindowTraits.mDefaultParams.PushBack( std::make_tuple(std::string("name"),std::string("gl") ) );
 	AddJobHandler("makewindow", MakeWindowTraits, *this, &TPopOpengl::OnMakeWindow );
+	
+	TParameterTraits MakeRenderTargetTraits;
+	MakeRenderTargetTraits.mRequiredKeys.PushBack("name");
+	MakeRenderTargetTraits.mRequiredKeys.PushBack("width");
+	MakeRenderTargetTraits.mRequiredKeys.PushBack("height");
+	AddJobHandler("makerendertarget", MakeRenderTargetTraits, *this, &TPopOpengl::OnMakeRenderTarget );
+
+	TParameterTraits ClearRenderTargetTraits;
+	AddJobHandler("clearrendertarget", ClearRenderTargetTraits, *this, &TPopOpengl::OnClearRenderTarget );
 }
 
 bool TPopOpengl::AddChannel(std::shared_ptr<TChannel> Channel)
@@ -106,17 +115,17 @@ void TPopOpengl::OnMakeWindow(TJobAndChannel &JobAndChannel)
 
 	vec2f Pos( 100,100 );
 	vec2f Size( 400, 400 );
-	std::stringstream Error;
-	std::shared_ptr<TTextureWindow> pWindow( new TTextureWindow(Name,Pos,Size,Error) );
+	std::shared_ptr<TTextureWindow> pWindow( new TTextureWindow(Name,Pos,Size,*this) );
 	if ( !pWindow->IsValid() )
 	{
 		TJobReply Reply(Job);
-		Reply.mParams.AddErrorParam( Error.str() );
+		Reply.mParams.AddErrorParam("failed to create window");
 		auto& Channel = JobAndChannel.GetChannel();
 		Channel.SendJobReply( Reply );
 		return;
 	}
 	
+	/*
 	SoyPixels TestTexture;
 	TestTexture.Init( 256, 256, SoyPixelsFormat::RGB );
 	BufferArray<char,3> Rgb;
@@ -125,18 +134,83 @@ void TPopOpengl::OnMakeWindow(TJobAndChannel &JobAndChannel)
 	Rgb.PushBack( 0 );
 	TestTexture.SetColour( GetArrayBridge(Rgb) );
 	pWindow->SetTexture( TestTexture );
-
+*/
 	mWindows.PushBack( pWindow );
 	TJobReply Reply(Job);
 	Reply.mParams.AddDefaultParam("OK");
-	if ( !Error.str().empty() )
-		Reply.mParams.AddErrorParam( Error.str() );
+//	if ( !Error.str().empty() )
+//		Reply.mParams.AddErrorParam( Error.str() );
 	
 	auto& Channel = JobAndChannel.GetChannel();
 	Channel.SendJobReply( Reply );
 }
 
+void TPopOpengl::OnMakeRenderTarget(TJobAndChannel& JobAndChannel)
+{
+	auto& Job = JobAndChannel.GetJob();
+	Opengl::TFboMeta Meta;
+	Meta.mName = Job.mParams.GetParamAs<std::string>("name");
+	Meta.mSize.x = Job.mParams.GetParamAs<int>("width");
+	Meta.mSize.y = Job.mParams.GetParamAs<int>("height");
+	
+	//	get context
+	auto Context = GetContext( Job.mParams.GetParamAs<std::string>("context") );
+	if ( !Context )
+	{
+		TJobReply Reply(Job);
+		Reply.mParams.AddErrorParam("Could not get gl context");
+		auto& Channel = JobAndChannel.GetChannel();
+		Channel.SendJobReply( Reply );
+		return;
+	}
+	
+	
+	std::shared_ptr<Opengl::TRenderTargetFbo> RenderTarget;
+	for ( int i=0;	i<mRenderTargets.GetSize();	i++ )
+	{
+		//	todo: replace if new params
+		if ( mRenderTargets[i]->mName == Meta.mName )
+			RenderTarget = mRenderTargets[i];
+	}
+	
+	std::stringstream ReplyString;
+	if ( !RenderTarget )
+	{
+		//	gr: make this block (RAII), flush the context's commands and catch the callback event
+		RenderTarget.reset( new Opengl::TRenderTargetFbo(Meta,*Context) );
+		mRenderTargets.PushBack( RenderTarget );
+		ReplyString << "Created new render target " << Meta.mName << std::endl;
+	}
+	else
+	{
+		ReplyString << "Render target " << Meta.mName << " already exists" << std::endl;
+	}
+	
+	TJobReply Reply(Job);
+	Reply.mParams.AddDefaultParam( ReplyString.str() );
 
+	auto& Channel = JobAndChannel.GetChannel();
+	Channel.SendJobReply( Reply );
+}
+
+void TPopOpengl::OnClearRenderTarget(TJobAndChannel& JobAndChannel)
+{
+	
+}
+
+Opengl::TContext* TPopOpengl::GetContext(const std::string& Name)
+{
+	if ( mWindows.IsEmpty() )
+		return nullptr;
+	
+	for ( int i=0;	i<mWindows.GetSize();	i++ )
+	{
+		auto& Window = *mWindows[i];
+		//	if name == Name
+	}
+	
+	return mWindows[0]->GetContext();
+}
 
 //	keep alive after PopMain()
 #if defined(TARGET_OSX_BUNDLE)

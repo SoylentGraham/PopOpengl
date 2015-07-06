@@ -11,6 +11,8 @@
 		BF89F6B71B4AB9DC00F58561 /* SoyAssert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF89F6B41B4AB9DC00F58561 /* SoyAssert.cpp */; };
 		BF89F6BA1B4AE28F00F58561 /* SoyMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF89F6B81B4AE28F00F58561 /* SoyMath.cpp */; };
 		BF89F6BB1B4AE28F00F58561 /* SoyMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF89F6B81B4AE28F00F58561 /* SoyMath.cpp */; };
+		BF89F6BE1B4B14CD00F58561 /* SoyVector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF89F6BC1B4B14CD00F58561 /* SoyVector.cpp */; };
+		BF89F6BF1B4B14CD00F58561 /* SoyVector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF89F6BC1B4B14CD00F58561 /* SoyVector.cpp */; };
 		FB2534BA1A974D0700A61590 /* PopOpengl.xib in Resources */ = {isa = PBXBuildFile; fileRef = FBF67B371A974BF400F74C38 /* PopOpengl.xib */; };
 		FB2534BB1A974E7400A61590 /* PopMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB8A067C1A2E69340099596C /* PopMain.cpp */; };
 		FB2534BC1A974E7400A61590 /* SoyData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB8A067E1A2E69340099596C /* SoyData.cpp */; };
@@ -162,6 +164,8 @@
 		BF89F6B51B4AB9DC00F58561 /* SoyAssert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SoyAssert.h; path = src/SoyAssert.h; sourceTree = "<group>"; };
 		BF89F6B81B4AE28F00F58561 /* SoyMath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SoyMath.cpp; path = src/SoyMath.cpp; sourceTree = "<group>"; };
 		BF89F6B91B4AE28F00F58561 /* SoyMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SoyMath.h; path = src/SoyMath.h; sourceTree = "<group>"; };
+		BF89F6BC1B4B14CD00F58561 /* SoyVector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SoyVector.cpp; path = src/SoyVector.cpp; sourceTree = "<group>"; };
+		BF89F6BD1B4B14CD00F58561 /* SoyVector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SoyVector.h; path = src/SoyVector.h; sourceTree = "<group>"; };
 		FB2534F71A97758D00A61590 /* TTextureWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TTextureWindow.cpp; path = src/TTextureWindow.cpp; sourceTree = "<group>"; };
 		FB2534F81A97758D00A61590 /* TTextureWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TTextureWindow.h; path = src/TTextureWindow.h; sourceTree = "<group>"; };
 		FB2534FF1A97763D00A61590 /* UnityDevice.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UnityDevice.cpp; path = src/UnityDevice.cpp; sourceTree = "<group>"; };
@@ -423,6 +427,8 @@
 				FB63E5191A71C3E9002C59BE /* SoyRingArray.h */,
 				FBC3A0E01A308648009DA49E /* SoyScope.h */,
 				FB8A06431A2E5A7C0099596C /* SoyState.h */,
+				BF89F6BC1B4B14CD00F58561 /* SoyVector.cpp */,
+				BF89F6BD1B4B14CD00F58561 /* SoyVector.h */,
 				FB8A064A1A2E5A7C0099596C /* SoyString.h */,
 				FB8A064D1A2E5A7C0099596C /* SoyThread.h */,
 				BF89F6B81B4AE28F00F58561 /* SoyMath.cpp */,
@@ -701,6 +707,7 @@
 				FB8A06F51A2E6B520099596C /* ReportAssert.cpp in Sources */,
 				FB8A06A61A2E6AF80099596C /* TChannelFile.cpp in Sources */,
 				FB8A06951A2E6AB50099596C /* TJobFormat.cpp in Sources */,
+				BF89F6BE1B4B14CD00F58561 /* SoyVector.cpp in Sources */,
 				FBF67AFF1A96A9C800F74C38 /* TOpenglWindow.mm in Sources */,
 				FB8A06F41A2E6B520099596C /* TimeHelpers.cpp in Sources */,
 				FB2535011A97763D00A61590 /* UnityDevice.cpp in Sources */,
@@ -773,6 +780,7 @@
 				FB2534F01A974EFB00A61590 /* TimeConstraint.cpp in Sources */,
 				FB2534EA1A974EFB00A61590 /* TestDetails.cpp in Sources */,
 				FB2534D81A974E7B00A61590 /* SoyScope.cpp in Sources */,
+				BF89F6BF1B4B14CD00F58561 /* SoyVector.cpp in Sources */,
 				FB2534EB1A974EFB00A61590 /* TestList.cpp in Sources */,
 				FB2534C01A974E7400A61590 /* TChannelPipe.cpp in Sources */,
 				FB2535021A97763D00A61590 /* UnityDevice.cpp in Sources */,

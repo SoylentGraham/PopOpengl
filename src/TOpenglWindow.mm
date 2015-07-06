@@ -25,23 +25,17 @@ public:
 
 
 
-TOpenglWindow::TOpenglWindow(const std::string& Name,vec2f Pos,vec2f Size,std::stringstream& Error) :
+TOpenglWindow::TOpenglWindow(const std::string& Name,vec2f Pos,vec2f Size) :
 	SoyWorkerThread		( Soy::GetTypeName(*this), SoyWorkerWaitMode::Sleep ),
 	mName				( Name )
 {
 	//	gr; check we have an NSApplication initalised here and fail if running as command line app
 #if !defined(TARGET_OSX_BUNDLE)
-	{
-		Error << "Cannot create windows in non-bundle apps, I don't think." << std::endl;
-		return;
-	}
+	throw new Soy::AssertException("Cannot create windows in non-bundle apps, I don't think.");
 #endif
 
 	if ( !Soy::Platform::BundleInitialised )
-	{
-		Error << "NSApplication hasn't been started. Cannot create window" << std::endl;
-		return;
-	}
+		throw new Soy::AssertException("NSApplication hasn't been started. Cannot create window");
 	
 	mMacWindow.reset( new MacWindow );
 	auto& Wrapper = *mMacWindow;
@@ -76,11 +70,7 @@ TOpenglWindow::TOpenglWindow(const std::string& Name,vec2f Pos,vec2f Size,std::s
 	mWindow = [[NSWindow alloc] initWithContentRect:WindowRect styleMask:Style backing:NSBackingStoreBuffered defer:Defer];
 	[mWindow retain];
 
-	if ( !mWindow )
-	{
-		Error << "failed to create window";
-		return;
-	}
+	Soy::Assert(mWindow,"failed to create window");
 
 	//	setup window
 //	[Window setLevel:NSMainMenuWindowLevel+1];
@@ -119,3 +109,13 @@ bool TOpenglWindow::Redraw()
 	[mView->mView display];
 	return true;
 }
+
+Opengl::TContext* TOpenglWindow::GetContext()
+{
+	if ( !mView )
+		return nullptr;
+	
+	return &mView->mContext;
+}
+
+
