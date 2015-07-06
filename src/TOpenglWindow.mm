@@ -59,14 +59,16 @@ TOpenglWindow::TOpenglWindow(const std::string& Name,vec2f Pos,vec2f Size,std::s
 //	NSRect WindowRect = [[NSScreen mainScreen] frame];
 
 	//	create a view
-	std::stringstream ViewError;
-	mView.reset( new TOpenglView( vec2f(FrameRect.origin.x,FrameRect.origin.y), vec2f(FrameRect.size.width,FrameRect.size.height), ViewError ) );
-	if ( !mView->IsValid() )
+	try
 	{
-		mView.reset();
-		Error << "Failed to create view: " << ViewError.str();
-		return;
+		mView.reset( new TOpenglView( vec2f(FrameRect.origin.x,FrameRect.origin.y), vec2f(FrameRect.size.width,FrameRect.size.height) ) );
+		Soy::Assert( mView->IsValid(), "view isn't valid?" );
 	}
+	catch (...)
+	{
+		throw;
+	}
+	
 	mOnRenderListener = mView->mOnRender.AddListener( *this, &TOpenglWindow::OnViewRender );
 
 	
@@ -99,7 +101,7 @@ TOpenglWindow::TOpenglWindow(const std::string& Name,vec2f Pos,vec2f Size,std::s
 
 TOpenglWindow::~TOpenglWindow()
 {
-		std::Debug << __func__ << std::endl;
+	std::Debug << __func__ << std::endl;
 	mView.reset();
 	mMacWindow.reset();
 }

@@ -1,5 +1,6 @@
 #include "PopOpengl.h"
 #import <Cocoa/Cocoa.h>
+#include "SoyOpengl.h"
 
 
 class TOpenglView;
@@ -17,15 +18,43 @@ class TOpenglView;
 @end
 
 
+class GlViewRenderTarget : public Opengl::TRenderTarget
+{
+public:
+	GlViewRenderTarget(const std::string& Name) :
+		TRenderTarget	( Name )
+	{
+	}
+	
+	virtual vec2x<GLint>	GetSize() override;
+};
+
+class GlViewContext : public Opengl::TContext
+{
+public:
+	GlViewContext(TOpenglView& Parent) :
+		mParent		( Parent )
+	{
+	}
+	
+	virtual bool	Lock() override;
+	virtual void	Unlock() override;
+	
+	TOpenglView&	mParent;
+};
+
+
 class TOpenglView
 {
 public:
-	TOpenglView(vec2f Position,vec2f Size,std::stringstream& Error);
+	TOpenglView(vec2f Position,vec2f Size);
 	~TOpenglView();
 	
 	bool			IsValid()	{	return mView != nullptr;	}
 	
 public:
-	SoyEvent<bool>	mOnRender;
-	MacOpenglView*	mView;
+	SoyEvent<Opengl::TRenderTarget>	mOnRender;
+	MacOpenglView*				mView;
+	GlViewContext				mContext;
+	GlViewRenderTarget			mRenderTarget;
 };

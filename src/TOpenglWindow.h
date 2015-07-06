@@ -2,6 +2,7 @@
 
 #include <SoyTypes.h>
 #include <SoyThread.h>
+#include "SoyOpengl.h"
 
 #if __has_feature(objc_arc)
 #error expected ARC off, if we NEED arc, then the NSWindow & view need to go in a pure obj-c wrapper to auto retain the refcounted object
@@ -27,13 +28,13 @@ public:
 	}
 
 private:
-	void			OnViewRender(bool& Dummy)
+	void			OnViewRender(Opengl::TRenderTarget& RenderTarget)
 	{
-		mOnRender.OnTriggered(Dummy);
+		mOnRender.OnTriggered(RenderTarget);
 	}
 	
 public:
-	SoyEvent<bool>	mOnRender;			//	for now we have a 1:1 view window connection
+	SoyEvent<Opengl::TRenderTarget>	mOnRender;			//	for now we have a 1:1 view window connection
 	SoyListenerId	mOnRenderListener;
 	
 	std::string		mName;

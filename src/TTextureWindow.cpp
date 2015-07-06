@@ -44,7 +44,9 @@ vec2f GetFrameBufferSize(GLint FrameBufferId)
 {
 	vec2f Error(200,200);
 
-	auto BindScope = SoyScope( [FrameBufferId]{ glBindRenderbuffer( GL_FRAMEBUFFER, FrameBufferId ); }, []{ glBindRenderbuffer( GL_FRAMEBUFFER, 0 ); } );
+	
+	auto BindScope = SoyScope( [FrameBufferId]{ glBindRenderbuffer( GL_RENDERBUFFER, FrameBufferId ); }, []{ glBindRenderbuffer( GL_RENDERBUFFER, 0 ); } );
+	//	auto BindScope = SoyScope( [FrameBufferId]{ glBindRenderbuffer( GL_FRAMEBUFFER, FrameBufferId ); }, []{ glBindRenderbuffer( GL_FRAMEBUFFER, 0 ); } );
 	if ( TUnityDevice_Opengl::HasError() )
 		return Error;
 
@@ -84,13 +86,19 @@ vec2f GetFrameBufferSize(GLint FrameBufferId)
 }
 
 
-void TTextureWindow::OnOpenglRender(bool& Dummy)
+void TTextureWindow::OnOpenglRender(Opengl::TRenderTarget& RenderTarget)
 {
+	std::Debug << __func__ << " at " << SoyTime(true) << std::endl;
 	if ( !mDevice )
 		return;
+
 	mDevice->SetRenderThread();
 	mDevice->OnRenderThreadUpdate();
 	
+	
+	
+	//	gr: move this to a simple job queuing
+	/*
 	//	new texture!
 	if ( mPendingTexture.Get().IsValid() )
 	{
@@ -107,6 +115,7 @@ void TTextureWindow::OnOpenglRender(bool& Dummy)
 		mPendingTexture.Clear();
 		mPendingTexture.unlock();
 	}
+	 */
 	
 	/*
 	//	load copy movie program
@@ -137,15 +146,13 @@ void TTextureWindow::OnOpenglRender(bool& Dummy)
 	}
 	*/
 
-	GLint FrameBufferId = 0;	//	screen
-	glBindFramebuffer( GL_FRAMEBUFFER, FrameBufferId );
-	auto FrameBufferSize = GetFrameBufferSize( FrameBufferId );
+	auto FrameBufferSize = RenderTarget.GetSize();
 	
 	std::Debug << "Frame buffer size: " << FrameBufferSize.x << "x" << FrameBufferSize.y << std::endl;
 	
 	//	set viewport (scissor so we see the real area)
 	glViewport( 0, 0, FrameBufferSize.x, FrameBufferSize.y );
-//	glScissor( 0, 0, FrameBufferSize.x, FrameBufferSize.y );
+	glScissor( 0, 0, FrameBufferSize.x, FrameBufferSize.y );
 	glClearColor(0.8, 0.4, 0.3, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -162,29 +169,30 @@ void TTextureWindow::OnOpenglRender(bool& Dummy)
 	//	render quad with texture
 	if ( mTexture.IsValid() )
 	{
-		glColor3f(1.f,1.f,1.f);
-		mTexture.Bind( *mDevice );
-		//glBindTexture( GL_TEXTURE_2D, mTexture.GetName() );
-		glBegin(GL_QUADS);
+		glColor3f(1.f,0.f,1.f);
+		//if ( mTexture.Bind( *mDevice ) )
 		{
-			glVertex3f(  0.0,  0.0, 0.0	);
-			glTexCoord2f(  0.0,  0.0	);
-			
-			glVertex3f(  1.0,  0.0, 0.0	);
-			glTexCoord2f(  1.0,  0.0	);
-			
-			glVertex3f(  1.0,  1.0, 0.0	);
-			glTexCoord2f(  1.0,  1.0	);
+			glBegin(GL_QUADS);
+			{
+				glVertex3f(  0.0,  0.0, 0.0	);
+				glTexCoord2f(  0.0,  0.0	);
+				
+				glVertex3f(  1.0,  0.0, 0.0	);
+				glTexCoord2f(  1.0,  0.0	);
+				
+				glVertex3f(  1.0,  1.0, 0.0	);
+				glTexCoord2f(  1.0,  1.0	);
 
-			glVertex3f(  0.0,  1.0, 0.0	);
-			glTexCoord2f(  0.0,  1.0	);
+				glVertex3f(  0.0,  1.0, 0.0	);
+				glTexCoord2f(  0.0,  1.0	);
+			}
+			glBindTexture( GL_TEXTURE, 0 );
+			glEnd();
 		}
-		glBindTexture( GL_TEXTURE, 0 );
-		glEnd();
 	}
 	else
 	{
-		glColor3f(1.0f, 0.f, 0.f);
+		glColor3f(1.0f, 1.f, 0.f);
 		glBegin(GL_TRIANGLES);
 		{
 			glVertex3f(  0.0,  0.6, 0.0);

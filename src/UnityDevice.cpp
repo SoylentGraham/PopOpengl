@@ -2,6 +2,7 @@
 #include <SoyDebug.h>
 #include "Unity.h"
 #include <RemoteArray.h>
+#include "SoyOpengl.h"
 
 static bool	OPENGL_REREADY_MAP			=true;	//	after we copy the dynamic texture, immediately re-open the map
 static bool	OPENGL_USE_STREAM_TEXTURE	=true;	//	GL_STREAM_DRAW else GL_DYNAMIC_DRAW
@@ -1011,46 +1012,12 @@ bool TUnityDevice_Opengl::DeleteTexture(TOpenglBufferCache& Buffer)
 }
 #endif
 
-#if defined(ENABLE_OPENGL)
-std::string OpenglError_ToString(GLenum Error)
-{
-	//	get the libraries string if provided
-	auto* pErrorString = reinterpret_cast<const char*>(glGetString( Error ));
 
-	if ( pErrorString )
-	{
-		std::string ErrorString = pErrorString;
-		return ErrorString;
-	}
-
-	switch ( Error )
-	{
-	case GL_NO_ERROR:			return "GL_NO_ERROR";
-	case GL_INVALID_ENUM:		return "GL_INVALID_ENUM";
-	case GL_INVALID_VALUE:		return "GL_INVALID_VALUE";
-	case GL_INVALID_OPERATION:	return "GL_INVALID_OPERATION";
-	case GL_STACK_OVERFLOW:		return "GL_STACK_OVERFLOW";
-	case GL_STACK_UNDERFLOW:	return "GL_STACK_UNDERFLOW";
-	case GL_OUT_OF_MEMORY:		return "GL_OUT_OF_MEMORY";
-	default:
-		{
-			std::stringstream ErrorString;
-			ErrorString << "Unknown GL error [" << static_cast<int>(Error) << "]";
-			return ErrorString.str();
-		}
-	}
-}
-#endif
 
 #if defined(ENABLE_OPENGL)
 bool TUnityDevice_Opengl::HasError()
 {
-	auto Error = glGetError();
-	if ( Error == GL_NO_ERROR )
-		return false;
-
-	std::Debug << "Opengl error; " << OpenglError_ToString( Error ) << std::endl;
-	return true;
+	return !Opengl::IsOkay("HasError");
 }
 #endif
 	

@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		BF89F6B61B4AB9DC00F58561 /* SoyAssert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF89F6B41B4AB9DC00F58561 /* SoyAssert.cpp */; };
 		BF89F6B71B4AB9DC00F58561 /* SoyAssert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF89F6B41B4AB9DC00F58561 /* SoyAssert.cpp */; };
+		BF89F6BA1B4AE28F00F58561 /* SoyMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF89F6B81B4AE28F00F58561 /* SoyMath.cpp */; };
+		BF89F6BB1B4AE28F00F58561 /* SoyMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF89F6B81B4AE28F00F58561 /* SoyMath.cpp */; };
 		FB2534BA1A974D0700A61590 /* PopOpengl.xib in Resources */ = {isa = PBXBuildFile; fileRef = FBF67B371A974BF400F74C38 /* PopOpengl.xib */; };
 		FB2534BB1A974E7400A61590 /* PopMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB8A067C1A2E69340099596C /* PopMain.cpp */; };
 		FB2534BC1A974E7400A61590 /* SoyData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB8A067E1A2E69340099596C /* SoyData.cpp */; };
@@ -158,6 +160,8 @@
 /* Begin PBXFileReference section */
 		BF89F6B41B4AB9DC00F58561 /* SoyAssert.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SoyAssert.cpp; path = src/SoyAssert.cpp; sourceTree = "<group>"; };
 		BF89F6B51B4AB9DC00F58561 /* SoyAssert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SoyAssert.h; path = src/SoyAssert.h; sourceTree = "<group>"; };
+		BF89F6B81B4AE28F00F58561 /* SoyMath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SoyMath.cpp; path = src/SoyMath.cpp; sourceTree = "<group>"; };
+		BF89F6B91B4AE28F00F58561 /* SoyMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SoyMath.h; path = src/SoyMath.h; sourceTree = "<group>"; };
 		FB2534F71A97758D00A61590 /* TTextureWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TTextureWindow.cpp; path = src/TTextureWindow.cpp; sourceTree = "<group>"; };
 		FB2534F81A97758D00A61590 /* TTextureWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TTextureWindow.h; path = src/TTextureWindow.h; sourceTree = "<group>"; };
 		FB2534FF1A97763D00A61590 /* UnityDevice.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UnityDevice.cpp; path = src/UnityDevice.cpp; sourceTree = "<group>"; };
@@ -421,6 +425,8 @@
 				FB8A06431A2E5A7C0099596C /* SoyState.h */,
 				FB8A064A1A2E5A7C0099596C /* SoyString.h */,
 				FB8A064D1A2E5A7C0099596C /* SoyThread.h */,
+				BF89F6B81B4AE28F00F58561 /* SoyMath.cpp */,
+				BF89F6B91B4AE28F00F58561 /* SoyMath.h */,
 				FB8A064F1A2E5A7C0099596C /* SoyTime.h */,
 				FB8A06511A2E5A7C0099596C /* SoyTypes.h */,
 				FB50C04A1A6ABD480011A9D9 /* array.hpp */,
@@ -648,6 +654,7 @@
 				FBF67B061A96B26900F74C38 /* TChannelFork.cpp in Sources */,
 				FB8A06681A2E5A7C0099596C /* SoyTypes.cpp in Sources */,
 				FB8A071A1A2E6C3E0099596C /* PopOpengl.cpp in Sources */,
+				BF89F6BA1B4AE28F00F58561 /* SoyMath.cpp in Sources */,
 				FB8A06F91A2E6B520099596C /* TestReporter.cpp in Sources */,
 				FB8A06F11A2E6B520099596C /* DeferredTestResult.cpp in Sources */,
 				FB8A07131A2E6B880099596C /* TParameters.cpp in Sources */,
@@ -719,6 +726,7 @@
 				FB2534CB1A974E7400A61590 /* TProtocolWebSocket.cpp in Sources */,
 				FB2534DE1A974E8200A61590 /* PopOpengl.cpp in Sources */,
 				FB2534E61A974EFB00A61590 /* DeferredTestResult.cpp in Sources */,
+				BF89F6BB1B4AE28F00F58561 /* SoyMath.cpp in Sources */,
 				FB2534DD1A974E7B00A61590 /* SoyTypes.cpp in Sources */,
 				FB2534C11A974E7400A61590 /* TChannelSocket.cpp in Sources */,
 				FB2534C71A974E7400A61590 /* TProtocol.cpp in Sources */,

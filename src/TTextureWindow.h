@@ -16,7 +16,7 @@ public:
 	bool		IsValid()			{	return mWindow!=nullptr;	}
 	
 	void		SetTexture(const SoyPixelsImpl& Pixels);
-	void		OnOpenglRender(bool& Dummy);	//	render callback
+	void		OnOpenglRender(Opengl::TRenderTarget& RenderTarget);
 
 private:
 	GlProgram			mTextureCopyProgram;

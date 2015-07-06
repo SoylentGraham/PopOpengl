@@ -2,6 +2,14 @@
 #include "UnityDevice.h"
 
 
+
+namespace Opengl
+{
+	const char*		ErrorToString(GLenum Error);
+}
+
+
+
 // Returns false and logs the ShaderInfoLog on failure.
 bool CompileShader( const GLuint shader, const char * src,const std::string& ErrorPrefix,std::ostream& Error)
 {
@@ -116,5 +124,94 @@ void DeleteProgram( GlProgram & prog )
 	prog.program = 0;
 	prog.vertexShader = 0;
 	prog.fragmentShader = 0;
+}
+
+
+
+void Opengl::TJobQueue::Push(std::shared_ptr<TJob>& Job)
+{
+	mLock.lock();
+	mJobs.push_back( Job );
+	mLock.unlock();
+}
+
+void Opengl::TJobQueue::Flush(TContext& Context)
+{
+	while ( true )
+	{
+		//	pop task
+		mLock.lock();
+		std::shared_ptr<TJob> Job;
+		auto NextJob = mJobs.begin();
+		if ( NextJob != mJobs.end() )
+		{
+			Job = *NextJob;
+			mJobs.erase( NextJob );
+		}
+		//bool MoreJobs = !mJobs.empty();
+		mLock.unlock();
+		
+		if ( !Job )
+			break;
+		
+		//	lock the context
+		if ( !Context.Lock() )
+		{
+			mLock.lock();
+			mJobs.insert( mJobs.begin(), Job );
+			mLock.unlock();
+			break;
+		}
+		auto ContextLock = SoyScope( []{}, [&Context]{Context.Unlock();} );
+		
+		//	execute task, if it returns false, we don't run any more this time and re-insert
+		if ( !Job->Run( std::Debug ) )
+		{
+			mLock.lock();
+			mJobs.insert( mJobs.begin(), Job );
+			mLock.unlock();
+			break;
+		}
+	}
+}
+
+
+void Opengl::TContext::PushJob(std::function<bool ()> Function)
+{
+	std::shared_ptr<TJob> Job( new TJob_Function( Function ) );
+	PushJob( Job );
+}
+
+
+const char* Opengl::ErrorToString(GLenum Error)
+{
+	switch ( Error )
+	{
+		case GL_NO_ERROR:			return "GL_NO_ERROR";
+		case GL_INVALID_ENUM:		return "GL_INVALID_ENUM";
+		case GL_INVALID_VALUE:		return "GL_INVALID_VALUE";
+		case GL_INVALID_OPERATION:	return "GL_INVALID_OPERATION";
+		case GL_INVALID_FRAMEBUFFER_OPERATION:	return "GL_INVALID_FRAMEBUFFER_OPERATION";
+		case GL_OUT_OF_MEMORY:		return "GL_OUT_OF_MEMORY";
+		case GL_STACK_UNDERFLOW:	return "GL_STACK_UNDERFLOW";
+		case GL_STACK_OVERFLOW:		return "GL_STACK_OVERFLOW";
+		default:
+			return "Unknown opengl error value";
+	};
+}
+
+bool Opengl::IsOkay(const std::string& Context)
+{
+//	if ( !IsInitialised(std::string("CheckIsOkay") + Context, false ) )
+//		return false;
+	
+	auto Error = glGetError();
+	if ( Error == GL_NONE )
+		return true;
+	
+	std::stringstream ErrorStr;
+	ErrorStr << "Opengl error in " << Context << ": " << Opengl::ErrorToString(Error) << std::endl;
+	
+	return Soy::Assert( Error == GL_NONE , ErrorStr.str() );
 }
 
