@@ -14,10 +14,6 @@ TTextureWindow::TTextureWindow(std::string Name,vec2f Position,vec2f Size,TPopOp
 		return;
 	}
 	
-	//	create device
-	//	gr: assume this will need a context at some point
-	mDevice.reset( new TUnityDevice_Opengl );
-
 	mWindow->mOnRender.AddListener(*this,&TTextureWindow::OnOpenglRender);
 }
 
@@ -29,7 +25,6 @@ TTextureWindow::~TTextureWindow()
 		mWindow.reset();
 	}
 	
-	mDevice.reset();
 }
 
 
@@ -40,17 +35,14 @@ vec2f GetFrameBufferSize(GLint FrameBufferId)
 	
 	auto BindScope = SoyScope( [FrameBufferId]{ glBindRenderbuffer( GL_RENDERBUFFER, FrameBufferId ); }, []{ glBindRenderbuffer( GL_RENDERBUFFER, 0 ); } );
 	//	auto BindScope = SoyScope( [FrameBufferId]{ glBindRenderbuffer( GL_FRAMEBUFFER, FrameBufferId ); }, []{ glBindRenderbuffer( GL_FRAMEBUFFER, 0 ); } );
-	if ( TUnityDevice_Opengl::HasError() )
-		return Error;
-
+	Opengl_IsOkay();
 	
 	//	0 = screen
 	//	glGetFramebufferAttachmentParameteriv( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 
 	GLint FrameBufferObjectType;
 	glGetFramebufferAttachmentParameteriv( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE, &FrameBufferObjectType );
-	if ( TUnityDevice_Opengl::HasError() )
-		return Error;
+	Opengl_IsOkay();
 	
 	
 	if ( FrameBufferObjectType == GL_NONE )
@@ -81,34 +73,6 @@ vec2f GetFrameBufferSize(GLint FrameBufferId)
 
 void TTextureWindow::OnOpenglRender(Opengl::TRenderTarget& RenderTarget)
 {
-	//std::Debug << __func__ << " at " << SoyTime(true) << std::endl;
-	if ( !mDevice )
-		return;
-
-	mDevice->SetRenderThread();
-	mDevice->OnRenderThreadUpdate();
-	
-	
-	
-	//	gr: move this to a simple job queuing
-	/*
-	//	new texture!
-	if ( mPendingTexture.Get().IsValid() )
-	{
-		mPendingTexture.lock();
-		
-		//	alloc texture
-		if ( !mTexture.IsValid() )
-		{
-			SoyPixelsMetaFull Meta( mPendingTexture.GetWidth(), mPendingTexture.GetHeight(), mPendingTexture.GetFormat() );
-			mTexture = Unity::TTexture_Opengl( mDevice->AllocTexture( Meta ) );
-		}
-		mDevice->CopyTexture( mTexture, mPendingTexture, true, true );
-
-		mPendingTexture.Clear();
-		mPendingTexture.unlock();
-	}
-	 */
 	
 	/*
 	//	load copy movie program
@@ -141,8 +105,7 @@ void TTextureWindow::OnOpenglRender(Opengl::TRenderTarget& RenderTarget)
 
 	auto FrameBufferSize = RenderTarget.GetSize();
 	
-	std::Debug << "Frame buffer size: " << FrameBufferSize.x << "x" << FrameBufferSize.y << std::endl;
-	//	set viewport (scissor so we see the real area)
+	//std::Debug << "Frame buffer size: " << FrameBufferSize.w << "x" << FrameBufferSize.h << std::endl;
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -167,28 +130,25 @@ void TTextureWindow::OnOpenglRender(Opengl::TRenderTarget& RenderTarget)
 		Opengl_IsOkay();
 	}
 	
-	if ( !mTestTexture.IsValid() )
+	if ( !mTestTexture )
 	{
 		SoyPixels mPendingTexture;
 		mPendingTexture.Init( 256, 256, SoyPixelsFormat::RGB );
 		BufferArray<char,3> Rgb;
 		Rgb.PushBack( 255 );
-		Rgb.PushBack( 0 );
+		Rgb.PushBack( 255 );
 		Rgb.PushBack( 0 );
 		mPendingTexture.SetColour( GetArrayBridge(Rgb) );
 		SoyPixelsMetaFull Meta( mPendingTexture.GetWidth(), mPendingTexture.GetHeight(), mPendingTexture.GetFormat() );
-		auto NewTexture = Unity::TTexture_Opengl( mDevice->AllocTexture( Meta ) );
-		mDevice->CopyTexture( NewTexture, mPendingTexture, true, true );
 		
-		//auto NewMeta = mDevice->GetTextureMeta( NewTexture );
-		
-		mTestTexture.mTexture.mName = NewTexture.GetName();
+		mTestTexture.reset( new Opengl::TTexture( Meta ) );
+		mTestTexture->Copy( mPendingTexture, true, true );
 	}
 
 	
 	Array<Opengl::TTexture> Textures;
-	if ( mTestTexture.IsValid() )
-		Textures.PushBack( mTestTexture );
+	if ( mTestTexture )
+		Textures.PushBack( *mTestTexture );
 	for ( int rt=0;	rt<mParent.mRenderTargets.GetSize();	rt++ )
 	{
 		auto& RenderTarget = *mParent.mRenderTargets[rt];

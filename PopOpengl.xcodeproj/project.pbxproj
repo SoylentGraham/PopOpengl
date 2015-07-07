@@ -80,10 +80,6 @@
 		FB2534F61A975CF300A61590 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB9C89991A82DFBA00931EFB /* OpenGL.framework */; };
 		FB2534F91A97758D00A61590 /* TTextureWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB2534F71A97758D00A61590 /* TTextureWindow.cpp */; };
 		FB2534FA1A97758D00A61590 /* TTextureWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB2534F71A97758D00A61590 /* TTextureWindow.cpp */; };
-		FB2535011A97763D00A61590 /* UnityDevice.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB2534FF1A97763D00A61590 /* UnityDevice.cpp */; };
-		FB2535021A97763D00A61590 /* UnityDevice.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB2534FF1A97763D00A61590 /* UnityDevice.cpp */; };
-		FB2535051A978EE900A61590 /* Unity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB2535031A978EE900A61590 /* Unity.cpp */; };
-		FB2535061A978EE900A61590 /* Unity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB2535031A978EE900A61590 /* Unity.cpp */; };
 		FB50C04F1A6ABD480011A9D9 /* memheap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB50C04D1A6ABD480011A9D9 /* memheap.cpp */; };
 		FB50C0521A6AC0980011A9D9 /* TFeatureBinRing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB50C0501A6AC0980011A9D9 /* TFeatureBinRing.cpp */; };
 		FB63E51A1A71C3E9002C59BE /* SoyRingArray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB63E5181A71C3E9002C59BE /* SoyRingArray.cpp */; };
@@ -178,10 +174,6 @@
 		BF89F6C71B4BCB9E00F58561 /* SoyOpenglContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SoyOpenglContext.h; path = src/SoyOpenglContext.h; sourceTree = "<group>"; };
 		FB2534F71A97758D00A61590 /* TTextureWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TTextureWindow.cpp; path = src/TTextureWindow.cpp; sourceTree = "<group>"; };
 		FB2534F81A97758D00A61590 /* TTextureWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TTextureWindow.h; path = src/TTextureWindow.h; sourceTree = "<group>"; };
-		FB2534FF1A97763D00A61590 /* UnityDevice.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UnityDevice.cpp; path = src/UnityDevice.cpp; sourceTree = "<group>"; };
-		FB2535001A97763D00A61590 /* UnityDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UnityDevice.h; path = src/UnityDevice.h; sourceTree = "<group>"; };
-		FB2535031A978EE900A61590 /* Unity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Unity.cpp; path = src/Unity.cpp; sourceTree = "<group>"; };
-		FB2535041A978EE900A61590 /* Unity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Unity.h; path = src/Unity.h; sourceTree = "<group>"; };
 		FB50C04A1A6ABD480011A9D9 /* array.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = array.hpp; path = src/array.hpp; sourceTree = "<group>"; };
 		FB50C04B1A6ABD480011A9D9 /* bufferarray.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = bufferarray.hpp; path = src/bufferarray.hpp; sourceTree = "<group>"; };
 		FB50C04C1A6ABD480011A9D9 /* HeapArray.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = HeapArray.hpp; path = src/HeapArray.hpp; sourceTree = "<group>"; };
@@ -389,10 +381,6 @@
 				FBF67AFE1A96A9C800F74C38 /* TOpenglWindow.mm */,
 				FB2534F71A97758D00A61590 /* TTextureWindow.cpp */,
 				FB2534F81A97758D00A61590 /* TTextureWindow.h */,
-				FB2535031A978EE900A61590 /* Unity.cpp */,
-				FB2535041A978EE900A61590 /* Unity.h */,
-				FB2534FF1A97763D00A61590 /* UnityDevice.cpp */,
-				FB2535001A97763D00A61590 /* UnityDevice.h */,
 			);
 			name = src;
 			sourceTree = SOURCE_ROOT;
@@ -706,7 +694,6 @@
 				FB8A06591A2E5A7C0099596C /* SoyMemFile.cpp in Sources */,
 				FB8A06941A2E6AB50099596C /* TJob.cpp in Sources */,
 				FB8A06F01A2E6B520099596C /* DeferredTestReporter.cpp in Sources */,
-				FB2535051A978EE900A61590 /* Unity.cpp in Sources */,
 				FB8A06F31A2E6B520099596C /* SignalTranslator.cpp in Sources */,
 				FB8A06811A2E69340099596C /* SoyData.cpp in Sources */,
 				BF89F6B61B4AB9DC00F58561 /* SoyAssert.cpp in Sources */,
@@ -725,7 +712,6 @@
 				BF89F6BE1B4B14CD00F58561 /* SoyVector.cpp in Sources */,
 				FBF67AFF1A96A9C800F74C38 /* TOpenglWindow.mm in Sources */,
 				FB8A06F41A2E6B520099596C /* TimeHelpers.cpp in Sources */,
-				FB2535011A97763D00A61590 /* UnityDevice.cpp in Sources */,
 				FB8A06961A2E6AB50099596C /* TJobRelay.cpp in Sources */,
 				FB8A06FB1A2E6B520099596C /* TestResults.cpp in Sources */,
 				FBF67B351A974AAF00F74C38 /* PopMain.mm in Sources */,
@@ -780,7 +766,6 @@
 				FB2534E31A974EFB00A61590 /* Checks.cpp in Sources */,
 				FBF67B361A974AAF00F74C38 /* PopMain.mm in Sources */,
 				FB2534E41A974EFB00A61590 /* CurrentTest.cpp in Sources */,
-				FB2535061A978EE900A61590 /* Unity.cpp in Sources */,
 				FB2534ED1A974EFB00A61590 /* TestReporterStdout.cpp in Sources */,
 				FB2534C51A974E7400A61590 /* TJobRelay.cpp in Sources */,
 				BF89F6B71B4AB9DC00F58561 /* SoyAssert.cpp in Sources */,
@@ -799,7 +784,6 @@
 				BF89F6BF1B4B14CD00F58561 /* SoyVector.cpp in Sources */,
 				FB2534EB1A974EFB00A61590 /* TestList.cpp in Sources */,
 				FB2534C01A974E7400A61590 /* TChannelPipe.cpp in Sources */,
-				FB2535021A97763D00A61590 /* UnityDevice.cpp in Sources */,
 				FB2534F41A974F1400A61590 /* TimeHelpers.cpp in Sources */,
 				FB2534EC1A974EFB00A61590 /* TestReporter.cpp in Sources */,
 				FB2534DB1A974E7B00A61590 /* SoyThread.cpp in Sources */,

@@ -2,7 +2,6 @@
 
 
 //	re-using unity opengl device interface
-#include "UnityDevice.h"
 #include "SoyOpenglContext.h"
 
 class TOpenglWindow;
@@ -27,7 +26,6 @@ public:
 private:
 	TPopOpengl&			mParent;
 	GlProgram			mTextureCopyProgram;
-	std::shared_ptr<TUnityDevice_Opengl>	mDevice;	//	device for window's context
-	std::shared_ptr<TOpenglWindow>	mWindow;
-	Opengl::TTexture	mTestTexture;
+	std::shared_ptr<TOpenglWindow>		mWindow;
+	std::shared_ptr<Opengl::TTexture>	mTestTexture;
 };
