@@ -23,6 +23,10 @@ TOpenglView::TOpenglView(vec2f Position,vec2f Size) :
 	{
 		NSOpenGLPFAAccelerated,		//	hardware only
 		NSOpenGLPFADoubleBuffer,
+		
+		//	require 3.2 to enable some features without using extensions (eg. glGenVertexArrays)
+		NSOpenGLPFAOpenGLProfile,
+		NSOpenGLProfileVersion3_2Core,
 		0
 	};
 	NSOpenGLPixelFormat* pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attrs];
