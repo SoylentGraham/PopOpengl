@@ -175,35 +175,57 @@ Opengl::TContext* TTextureWindow::GetContext()
 
 void TTextureWindow::DrawQuad(Opengl::TTexture Texture,Soy::Rectf Rect)
 {
+	if ( !mBlitQuad.IsValid() )
+	{
+		//	make mesh
+		class TMesh
+		{
+		public:
+			vec2f	mUvs[4];
+		};
+		TMesh Mesh;
+		Mesh.mUvs[0] = vec2f(0,0);
+		Mesh.mUvs[1] = vec2f(1,0);
+		Mesh.mUvs[2] = vec2f(1,1);
+		Mesh.mUvs[3] = vec2f(0,1);
+		Array<GLshort> Indexes;
+		Indexes.PushBack( 0 );
+		Indexes.PushBack( 1 );
+		Indexes.PushBack( 2 );
+		Indexes.PushBack( 3 );
+		Array<Opengl::TUniform> Attribs;
+		auto& UvAttrib = Attribs.PushBack();
+		UvAttrib.mName = "TexCoord";
+		UvAttrib.mType = GL_FLOAT_VEC2;
+		UvAttrib.mIndex = 0;	//	gr: does this matter?
+		UvAttrib.mArraySize = 1;
+		mBlitQuad = Opengl::CreateGeometry( Mesh, GetArrayBridge(Indexes), GetArrayBridge(Attribs) );
+	}
+
 	//	allocate objects we need!
 	if ( !mBlitShader.IsValid() )
 	{
 		auto VertShader =	"uniform vec4 Rect;\n"
-							"attribute vec4 Position;\n"
 							"attribute vec2 TexCoord;\n"
-							"varying highp vec2 oTexCoord;\n"
+							"varying vec2 oTexCoord;\n"
 							"void main()\n"
 							"{\n"
-							"   gl_Position = Position * Rect.zw;\n"
+							"   gl_Position = vec4(TexCoord.x,TexCoord.y,0,0) * Rect.zwzw;\n"
 							"   gl_Position.xy += Rect.xy;\n"
 							"   oTexCoord = TexCoord;\n"
 							"}\n";
 		auto FragShader =	//"#extension GL_OES_EGL_image_external : require\n"
 							//"uniform samplerExternalOES Texture0;\n"
 							"uniform sampler2D Texture0;\n"
-							"varying highp vec2 oTexCoord;\n"
+							"varying vec2 oTexCoord;\n"
 							"void main()\n"
 							"{\n"
 							"	gl_FragColor = texture2D( Texture0, oTexCoord );\n"
 							"}\n";
 
-		mBlitShader = Opengl::BuildProgram( VertShader, FragShader );
+		mBlitShader = Opengl::BuildProgram( VertShader, FragShader, mBlitQuad );
 	}
 	
-	if ( !mBlitQuad.IsValid() )
-	{
-		mBlitQuad = Opengl::BuildTesselatedQuad(1,1);
-	}
 	
 	//	do bindings
 	auto Shader = mBlitShader.Bind();
