@@ -3,7 +3,7 @@
 #include <SoyApp.h>
 #include <TJob.h>
 #include <TChannel.h>
-#include "SoyOpengl.h"
+#include "SoyOpenglContext.h"
 
 class TTextureWindow;
 

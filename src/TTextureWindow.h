@@ -3,7 +3,7 @@
 
 //	re-using unity opengl device interface
 #include "UnityDevice.h"
-#include "SoyOpengl.h"
+#include "SoyOpenglContext.h"
 
 class TOpenglWindow;
 class TPopOpengl;

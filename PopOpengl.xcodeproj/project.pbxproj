@@ -13,6 +13,8 @@
 		BF89F6BB1B4AE28F00F58561 /* SoyMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF89F6B81B4AE28F00F58561 /* SoyMath.cpp */; };
 		BF89F6BE1B4B14CD00F58561 /* SoyVector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF89F6BC1B4B14CD00F58561 /* SoyVector.cpp */; };
 		BF89F6BF1B4B14CD00F58561 /* SoyVector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF89F6BC1B4B14CD00F58561 /* SoyVector.cpp */; };
+		BF89F6C21B4BC7CE00F58561 /* SoyOpenglContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF89F6C01B4BC7CE00F58561 /* SoyOpenglContext.cpp */; };
+		BF89F6C31B4BC7CE00F58561 /* SoyOpenglContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF89F6C01B4BC7CE00F58561 /* SoyOpenglContext.cpp */; };
 		FB2534BA1A974D0700A61590 /* PopOpengl.xib in Resources */ = {isa = PBXBuildFile; fileRef = FBF67B371A974BF400F74C38 /* PopOpengl.xib */; };
 		FB2534BB1A974E7400A61590 /* PopMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB8A067C1A2E69340099596C /* PopMain.cpp */; };
 		FB2534BC1A974E7400A61590 /* SoyData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FB8A067E1A2E69340099596C /* SoyData.cpp */; };
@@ -166,6 +168,8 @@
 		BF89F6B91B4AE28F00F58561 /* SoyMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SoyMath.h; path = src/SoyMath.h; sourceTree = "<group>"; };
 		BF89F6BC1B4B14CD00F58561 /* SoyVector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SoyVector.cpp; path = src/SoyVector.cpp; sourceTree = "<group>"; };
 		BF89F6BD1B4B14CD00F58561 /* SoyVector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SoyVector.h; path = src/SoyVector.h; sourceTree = "<group>"; };
+		BF89F6C01B4BC7CE00F58561 /* SoyOpenglContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SoyOpenglContext.cpp; path = src/SoyOpenglContext.cpp; sourceTree = "<group>"; };
+		BF89F6C11B4BC7CE00F58561 /* SoyOpenglContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SoyOpenglContext.h; path = src/SoyOpenglContext.h; sourceTree = "<group>"; };
 		FB2534F71A97758D00A61590 /* TTextureWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TTextureWindow.cpp; path = src/TTextureWindow.cpp; sourceTree = "<group>"; };
 		FB2534F81A97758D00A61590 /* TTextureWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TTextureWindow.h; path = src/TTextureWindow.h; sourceTree = "<group>"; };
 		FB2534FF1A97763D00A61590 /* UnityDevice.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UnityDevice.cpp; path = src/UnityDevice.cpp; sourceTree = "<group>"; };
@@ -374,6 +378,8 @@
 				FBF67B321A974A7B00F74C38 /* Info.plist */,
 				FB8A07181A2E6C3E0099596C /* PopOpengl.cpp */,
 				FB8A07191A2E6C3E0099596C /* PopOpengl.h */,
+				BF89F6C01B4BC7CE00F58561 /* SoyOpenglContext.cpp */,
+				BF89F6C11B4BC7CE00F58561 /* SoyOpenglContext.h */,
 				FBF67B371A974BF400F74C38 /* PopOpengl.xib */,
 				FBFFDB641AA11D5800330A83 /* SoyOpengl.cpp */,
 				FBFFDB651AA11D5800330A83 /* SoyOpengl.h */,
@@ -682,6 +688,7 @@
 				FB8A07101A2E6B520099596C /* XmlTestReporter.cpp in Sources */,
 				FB8A065E1A2E5A7C0099596C /* SoyPng.cpp in Sources */,
 				FB6650CD1A56FD8600DF0A12 /* SoyDebug.mm in Sources */,
+				BF89F6C21B4BC7CE00F58561 /* SoyOpenglContext.cpp in Sources */,
 				FB8A06551A2E5A7C0099596C /* SoyDebug.cpp in Sources */,
 				FBFFDB661AA11D5800330A83 /* SoyOpengl.cpp in Sources */,
 				FBF67B021A96AA5500F74C38 /* TOpenglView.mm in Sources */,
@@ -755,6 +762,7 @@
 				FB2534C81A974E7400A61590 /* TProtocolCli.cpp in Sources */,
 				FB2534F21A974F0600A61590 /* sha1.cpp in Sources */,
 				FB2534C61A974E7400A61590 /* TParameters.cpp in Sources */,
+				BF89F6C31B4BC7CE00F58561 /* SoyOpenglContext.cpp in Sources */,
 				FB2534EF1A974EFB00A61590 /* TestRunner.cpp in Sources */,
 				FBFFDB671AA11D5800330A83 /* SoyOpengl.cpp in Sources */,
 				FB2534D61A974E7B00A61590 /* SoyRef.cpp in Sources */,
