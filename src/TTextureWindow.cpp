@@ -105,30 +105,15 @@ void TTextureWindow::OnOpenglRender(Opengl::TRenderTarget& RenderTarget)
 
 	auto FrameBufferSize = RenderTarget.GetSize();
 	
-	//std::Debug << "Frame buffer size: " << FrameBufferSize.w << "x" << FrameBufferSize.h << std::endl;
 	
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
+	Soy::TCamera Camera;
 	Soy::Rectf OrthoRect( 0, 0, 1, 1 );
 	//	note upside down order
-	glOrtho( OrthoRect.x, OrthoRect.w, OrthoRect.h, OrthoRect.y, 0.0f, 1.0f);
-	glMatrixMode(GL_MODELVIEW);
-	
-	glViewport( 0, 0, FrameBufferSize.w, FrameBufferSize.h );
-	//glScissor( 0, 0, 1, 1 );
-	static bool swap = 0;
-	glClearColor( 0, swap?0:1, swap?1:0, 1 );
-	swap = !swap;
-	glClear(GL_COLOR_BUFFER_BIT);
+	Camera.mProjectionMtx =	mathfu::OrthoHelper( OrthoRect.x, OrthoRect.w, OrthoRect.h, OrthoRect.y, Camera.mDepthNear, Camera.mDepthFar );
+	Opengl::SetViewport( Soy::Rectf( FrameBufferSize ) );
+	Opengl::ClearColour( Soy::TRgb(0,0,1) );
 	
 	
-	if ( mTextureCopyProgram.IsValid() )
-	{
-		glUseProgram( mTextureCopyProgram.program );
-//	UnitSquare.Draw();
-		glUseProgram( 0 );
-		Opengl_IsOkay();
-	}
 	
 	if ( !mTestTexture )
 	{
@@ -170,32 +155,8 @@ void TTextureWindow::OnOpenglRender(Opengl::TRenderTarget& RenderTarget)
 			if ( !Texture.IsValid() )
 				continue;
 
-			glEnable(GL_TEXTURE_2D);
-			if ( Texture.Bind() )
-				glColor3f(1,1,1);
-			else
-				glColor3f(1,0,0);
-
-			{
-				glBegin(GL_QUADS);
-				{
-					glVertex3f(  Rect.Left(), Rect.Top(), z );
-					glTexCoord2f(  0.0,  0.0	);
-					
-					glVertex3f( Rect.Right(), Rect.Top(), z	);
-					glTexCoord2f(  1.0,  0.0	);
-					
-					glVertex3f( Rect.Right(), Rect.Bottom(), z	);
-					glTexCoord2f(  1.0,  1.0	);
-
-					glVertex3f( Rect.Left(), Rect.Bottom(), z	);
-					glTexCoord2f(  0.0,  1.0	);
-				}
-				glEnd();
-				Texture.Unbind();
-			}
-			
-			Rect.y += Rect.h;
+			DrawQuad( Texture, Rect );
+						Rect.y += Rect.h;
 		}
 	}
 	
@@ -209,3 +170,86 @@ Opengl::TContext* TTextureWindow::GetContext()
 	
 	return mWindow->GetContext();
 }
+
+
+
+void TTextureWindow::DrawQuad(Opengl::TTexture Texture,Soy::Rectf Rect)
+{
+	//	allocate objects we need!
+	if ( !mBlitShader.IsValid() )
+	{
+		auto VertShader =	"uniform vec4 Rect;\n"
+							"attribute vec4 Position;\n"
+							"attribute vec2 TexCoord;\n"
+							"varying highp vec2 oTexCoord;\n"
+							"void main()\n"
+							"{\n"
+							"   gl_Position = Position * Rect.zw;\n"
+							"   gl_Position.xy += Rect.xy;\n"
+							"   oTexCoord = TexCoord;\n"
+							"}\n";
+		auto FragShader =	//"#extension GL_OES_EGL_image_external : require\n"
+							//"uniform samplerExternalOES Texture0;\n"
+							"uniform sampler2D Texture0;\n"
+							"varying highp vec2 oTexCoord;\n"
+							"void main()\n"
+							"{\n"
+							"	gl_FragColor = texture2D( Texture0, oTexCoord );\n"
+							"}\n";
+
+		mBlitShader = Opengl::BuildProgram( VertShader, FragShader );
+	}
+	
+	if ( !mBlitQuad.IsValid() )
+	{
+		mBlitQuad = Opengl::BuildTesselatedQuad(1,1);
+	}
+	
+	//	do bindings
+	auto Shader = mBlitShader.Bind();
+	Shader.SetUniform("Rect", Soy::RectToVector(Rect) );
+	Shader.SetUniform("Texture0", Texture );
+	mBlitQuad.Draw();
+	
+		
+	
+	/*
+	 if ( mTextureCopyProgram.IsValid() )
+	 {
+		glUseProgram( mTextureCopyProgram.program );
+	 //	UnitSquare.Draw();
+		glUseProgram( 0 );
+		Opengl_IsOkay();
+	 }
+
+	 
+	 glEnable(GL_TEXTURE_2D);
+	 if ( Texture.Bind() )
+	 glColor3f(1,1,1);
+	 else
+	 glColor3f(1,0,0);
+	 
+	 {
+	 glBegin(GL_QUADS);
+	 {
+	 glVertex3f(  Rect.Left(), Rect.Top(), z );
+	 glTexCoord2f(  0.0,  0.0	);
+	 
+	 glVertex3f( Rect.Right(), Rect.Top(), z	);
+	 glTexCoord2f(  1.0,  0.0	);
+	 
+	 glVertex3f( Rect.Right(), Rect.Bottom(), z	);
+	 glTexCoord2f(  1.0,  1.0	);
+	 
+	 glVertex3f( Rect.Left(), Rect.Bottom(), z	);
+	 glTexCoord2f(  0.0,  1.0	);
+	 }
+	 glEnd();
+	 Texture.Unbind();
+	 }
+	 
+
+	 */
+}
+
+

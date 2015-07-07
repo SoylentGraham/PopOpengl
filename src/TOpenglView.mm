@@ -1,5 +1,4 @@
 #import "TOpenGLView.h"
-#include <OpenGL/gl.h>
 #include <SoyMath.h>
 
 namespace Opengl
@@ -22,6 +21,7 @@ TOpenglView::TOpenglView(vec2f Position,vec2f Size) :
 	//	make "pixelformat" (context params)
 	NSOpenGLPixelFormatAttribute attrs[] =
 	{
+		NSOpenGLPFAAccelerated,		//	hardware only
 		NSOpenGLPFADoubleBuffer,
 		0
 	};

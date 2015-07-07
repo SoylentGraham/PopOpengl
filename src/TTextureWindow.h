@@ -23,9 +23,14 @@ public:
 	void				OnOpenglRender(Opengl::TRenderTarget& RenderTarget);
 	Opengl::TContext*	GetContext();
 	
+protected:
+	void				DrawQuad(Opengl::TTexture Texture,Soy::Rectf Rect);
+	
 private:
 	TPopOpengl&			mParent;
-	GlProgram			mTextureCopyProgram;
+	
+	Opengl::GlProgram	mBlitShader;
+	Opengl::TGeometry	mBlitQuad;
 	std::shared_ptr<TOpenglWindow>		mWindow;
 	std::shared_ptr<Opengl::TTexture>	mTestTexture;
 };
