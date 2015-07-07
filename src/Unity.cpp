@@ -13,12 +13,12 @@ namespace UnityEvent
 
 };
 
-extern "C" void EXPORT_API FlushDebug(Unity::LogCallback LogFunc)
+extern "C" void __export FlushDebug(Unity::LogCallback LogFunc)
 {
 	PopUnity::Get().FlushDebugMessages(LogFunc);
 }
 
-extern "C" void EXPORT_API OnStopped()
+extern "C" void __export OnStopped()
 {
 	bool Dummy = true;
 	UnityEvent::mOnStopped.OnTriggered(Dummy);
@@ -208,7 +208,7 @@ TJobInterfaceWrapper::TJobInterfaceWrapper(const TJob& Job)
 	}
 }
 
-extern "C" uint64 EXPORT_API CreateChannel(const char* ChannelSpec)
+extern "C" uint64 __export CreateChannel(const char* ChannelSpec)
 {
 	static SoyRef ChannelRef("chan");
 	ChannelRef.Increment();
@@ -222,7 +222,7 @@ extern "C" uint64 EXPORT_API CreateChannel(const char* ChannelSpec)
 	return Channel->GetChannelRef().GetInt64();
 }
 
-extern "C" bool EXPORT_API SendJob(uint64 ChannelRef,const char* Command)
+extern "C" bool __export SendJob(uint64 ChannelRef,const char* Command)
 {
 	auto& App = PopUnity::Get();
 	auto Channel = App.GetChannel( SoyRef(ChannelRef) );
@@ -248,7 +248,7 @@ extern "C" bool EXPORT_API SendJob(uint64 ChannelRef,const char* Command)
 	return true;
 }
 
-extern "C" bool EXPORT_API PopJob(Unity::JobCallback Func)
+extern "C" bool __export PopJob(Unity::JobCallback Func)
 {
 	auto& App = PopUnity::Get();
 	
@@ -271,7 +271,7 @@ extern "C" bool EXPORT_API PopJob(Unity::JobCallback Func)
 
 
 
-extern "C" int EXPORT_API GetJobParam_int(TJobInterface* JobInterface,const char* Param,int DefaultValue)
+extern "C" int __export GetJobParam_int(TJobInterface* JobInterface,const char* Param,int DefaultValue)
 {
 	auto& Job = *JobInterface->mTJob;
 	auto Value = Job.mParams.GetParamAsWithDefault<int>( Param, DefaultValue );
@@ -279,7 +279,7 @@ extern "C" int EXPORT_API GetJobParam_int(TJobInterface* JobInterface,const char
 }
 
 
-extern "C" float EXPORT_API GetJobParam_float(TJobInterface* JobInterface,const char* Param,float DefaultValue)
+extern "C" float __export GetJobParam_float(TJobInterface* JobInterface,const char* Param,float DefaultValue)
 {
 	auto& Job = *JobInterface->mTJob;
 	auto Value = Job.mParams.GetParamAsWithDefault<float>( Param, DefaultValue );
@@ -287,7 +287,7 @@ extern "C" float EXPORT_API GetJobParam_float(TJobInterface* JobInterface,const 
 }
 
 
-extern "C" const char* EXPORT_API GetJobParam_string(TJobInterface* JobInterface,const char* Param,const char* DefaultValue)
+extern "C" const char* __export GetJobParam_string(TJobInterface* JobInterface,const char* Param,const char* DefaultValue)
 {
 	//	gr: to avoid memory management, we leave the variable in a static
 	//		in theory, this is only called whilst the job interface exists
@@ -307,7 +307,7 @@ extern "C" const char* EXPORT_API GetJobParam_string(TJobInterface* JobInterface
 }
 
 
-extern "C" bool EXPORT_API GetJobParam_texture(TJobInterface* JobInterface,const char* ParamName,int Texture,SoyPixelsFormat::Type Format,bool Stretch)
+extern "C" bool __export GetJobParam_texture(TJobInterface* JobInterface,const char* ParamName,int Texture,SoyPixelsFormat::Type Format,bool Stretch)
 {
 	auto& Job = *JobInterface->mTJob;
 
@@ -326,7 +326,7 @@ extern "C" bool EXPORT_API GetJobParam_texture(TJobInterface* JobInterface,const
 }
 
 
-extern "C" bool EXPORT_API GetJobParam_PixelsWidthHeight(TJobInterface* JobInterface,const char* ParamName,int* Width,int* Height)
+extern "C" bool __export GetJobParam_PixelsWidthHeight(TJobInterface* JobInterface,const char* ParamName,int* Width,int* Height)
 {
 	auto& Job = *JobInterface->mTJob;
 	
@@ -391,7 +391,7 @@ bool TryExtractArray(const TJobParams& Params,const std::string& ParamName,const
 	return true;
 }
 
-extern "C" int EXPORT_API GetJobParam_Array(TJobInterface* JobInterface,const char* ParamName,const char* ElementTypeName,void* Array,int ArraySize)
+extern "C" int __export GetJobParam_Array(TJobInterface* JobInterface,const char* ParamName,const char* ElementTypeName,void* Array,int ArraySize)
 {
 	auto& Job = *JobInterface->mTJob;
 

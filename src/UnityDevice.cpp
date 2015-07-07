@@ -29,12 +29,12 @@ bool Unity::AllocDevice(Unity::TGfxDevice::Type DeviceType,void* Device)
 #if defined(ENABLE_DX11)
 		case Unity::TGfxDevice::D3D11:
 			if ( Device )
-				gDevice = ofPtr<TUnityDevice>( new TUnityDevice_Dx11( static_cast<ID3D11Device*>(Device) ) );
+				gDevice = std::shared_ptr<TUnityDevice>( new TUnityDevice_Dx11( static_cast<ID3D11Device*>(Device) ) );
 			break;
 #endif
 #if defined(ENABLE_OPENGL)
 		case Unity::TGfxDevice::OpenGL:
-			gDevice = ofPtr<TUnityDevice>( new TUnityDevice_Opengl() );
+			gDevice = std::shared_ptr<TUnityDevice>( new TUnityDevice_Opengl() );
 			break;
 #endif
 		default:
@@ -69,7 +69,7 @@ bool Unity::FreeDevice(Unity::TGfxDevice::Type DeviceType)
 
 
 
-extern "C" void EXPORT_API UnitySetGraphicsDevice(void* device, int deviceType, int eventType)
+extern "C" void __export UnitySetGraphicsDevice(void* device, int deviceType, int eventType)
 {
 	auto DeviceEvent = static_cast<Unity::TGfxDeviceEvent::Type>( eventType );
 	auto DeviceType = static_cast<Unity::TGfxDevice::Type>( deviceType );
@@ -90,7 +90,7 @@ extern "C" void EXPORT_API UnitySetGraphicsDevice(void* device, int deviceType, 
 	
 }
 
-extern "C" void EXPORT_API UnityRenderEvent(int eventID)
+extern "C" void __export UnityRenderEvent(int eventID)
 {
 	if ( Unity::gDevice )
 		Unity::gDevice->SetRenderThread();
