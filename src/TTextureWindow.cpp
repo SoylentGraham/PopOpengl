@@ -237,6 +237,7 @@ void TTextureWindow::DrawQuad(Opengl::TTexture Texture,Soy::Rectf Rect)
 							"	gl_FragColor = texture2D( Texture0, oTexCoord );\n"
 							"}\n";
 		*/
+		
 		auto VertShader =
 		"uniform vec4 Rect;\n"
 		"attribute vec2 TexCoord;\n"
@@ -253,9 +254,11 @@ void TTextureWindow::DrawQuad(Opengl::TTexture Texture,Soy::Rectf Rect)
 		"}\n";
 		auto FragShader =
 		"varying vec2 oTexCoord;\n"
+		"uniform sampler2D Texture0;\n"
 		"void main()\n"
 		"{\n"
-		"	gl_FragColor = vec4(oTexCoord.x,oTexCoord.y,0,1);\n"
+		//"	gl_FragColor = vec4(oTexCoord.x,oTexCoord.y,0,1);\n"
+		"	gl_FragColor = texture2D(Texture0,oTexCoord);\n"
 		"}\n";
 
 		mBlitShader = Opengl::BuildProgram( VertShader, FragShader, mBlitQuad.mVertexDescription );
@@ -264,7 +267,7 @@ void TTextureWindow::DrawQuad(Opengl::TTexture Texture,Soy::Rectf Rect)
 	
 	//	do bindings
 	auto Shader = mBlitShader.Bind();
-	//Shader.SetUniform("Texture0", Texture );
+	Shader.SetUniform("Texture0", Texture );
 	Shader.SetUniform("Rect", Soy::RectToVector(Rect) );
 	mBlitQuad.Draw();
 	
