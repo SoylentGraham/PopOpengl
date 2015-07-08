@@ -1,15 +1,6 @@
 #import "TOpenGLView.h"
 #include <SoyMath.h>
 
-namespace Opengl
-{
-	void Clear(Soy::TRgb Rgb)
-	{
-		glClearColor( Rgb.r(), Rgb.g(), Rgb.b(), 1 );
-		glClear(GL_COLOR_BUFFER_BIT);
-	}
-}
-
 
 TOpenglView::TOpenglView(vec2f Position,vec2f Size) :
 	mView			( nullptr ),
@@ -65,7 +56,7 @@ TOpenglView::~TOpenglView()
 	//	render callback from OS, always on main thread?
 	if ( !mParent )
 	{
-		Opengl::Clear( Soy::TRgb(1,0,0) );
+		Opengl::ClearColour( Soy::TRgb(1,0,0) );
 		return;
 	}
 	
@@ -92,7 +83,7 @@ TOpenglView::~TOpenglView()
 		if ( !mParent->mRenderTarget.Bind() )
 			return false;
 		//	gr: don't really wanna send the context here I don't think.... probably wanna send render target
-		Opengl::Clear( Soy::TRgb(0,1,0) );
+		//Opengl::ClearColour( Soy::TRgb(0,1,0) );
 		mParent->mOnRender.OnTriggered( mParent->mRenderTarget );
 		mParent->mRenderTarget.Unbind();
 		return true;
