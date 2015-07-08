@@ -112,7 +112,8 @@ void TTextureWindow::OnOpenglRender(Opengl::TRenderTarget& RenderTarget)
 	Camera.mProjectionMtx =	mathfu::OrthoHelper( OrthoRect.x, OrthoRect.w, OrthoRect.h, OrthoRect.y, Camera.mDepthNear, Camera.mDepthFar );
 	Opengl::SetViewport( Soy::Rectf( FrameBufferSize ) );
 	Opengl::ClearColour( Soy::TRgb(0,0,1) );
-	
+	Opengl::ClearDepth();
+	glDisable(GL_DEPTH_TEST);
 	
 	
 	if ( !mTestTexture )
@@ -147,7 +148,6 @@ void TTextureWindow::OnOpenglRender(Opengl::TRenderTarget& RenderTarget)
 	if ( !Textures.IsEmpty() )
 	{
 		Soy::Rectf Rect( 0,0,1.0,1/static_cast<float>(Textures.GetSize()) );
-		float z = 0;
 		
 		for ( int rt=0;	rt<Textures.GetSize();	rt++ )
 		{
@@ -156,7 +156,7 @@ void TTextureWindow::OnOpenglRender(Opengl::TRenderTarget& RenderTarget)
 				continue;
 
 			DrawQuad( Texture, Rect );
-						Rect.y += Rect.h;
+			Rect.y += Rect.h;
 		}
 	}
 	
@@ -178,33 +178,47 @@ void TTextureWindow::DrawQuad(Opengl::TTexture Texture,Soy::Rectf Rect)
 	if ( !mBlitQuad.IsValid() )
 	{
 		//	make mesh
+		struct TVertex
+		{
+			vec2f	uv;
+		};
 		class TMesh
 		{
 		public:
-			vec2f	mUvs[4];
+			TVertex	mVertexes[4];
 		};
 		TMesh Mesh;
-		Mesh.mUvs[0] = vec2f(0,0);
-		Mesh.mUvs[1] = vec2f(1,0);
-		Mesh.mUvs[2] = vec2f(1,1);
-		Mesh.mUvs[3] = vec2f(0,1);
+		Mesh.mVertexes[0].uv = vec2f( 0, 0);
+		Mesh.mVertexes[1].uv = vec2f( 1, 0);
+		Mesh.mVertexes[2].uv = vec2f( 1, 1);
+		Mesh.mVertexes[3].uv = vec2f( 0, 1);
 		Array<GLshort> Indexes;
 		Indexes.PushBack( 0 );
 		Indexes.PushBack( 1 );
 		Indexes.PushBack( 2 );
+
+		Indexes.PushBack( 2 );
 		Indexes.PushBack( 3 );
-		Array<Opengl::TUniform> Attribs;
-		auto& UvAttrib = Attribs.PushBack();
+		Indexes.PushBack( 0 );
+		
+		//	for each part of the vertex, add an attribute to describe the overall vertex
+		Opengl::TGeometryVertex Vertex;
+		auto& UvAttrib = Vertex.mElements.PushBack();
 		UvAttrib.mName = "TexCoord";
-		UvAttrib.mType = GL_FLOAT_VEC2;
+		UvAttrib.mType = GL_FLOAT;
 		UvAttrib.mIndex = 0;	//	gr: does this matter?
-		UvAttrib.mArraySize = 1;
-		mBlitQuad = Opengl::CreateGeometry( Mesh, GetArrayBridge(Indexes), GetArrayBridge(Attribs) );
+		UvAttrib.mArraySize = 2;
+		UvAttrib.mElementDataSize = sizeof( Mesh.mVertexes[0].uv );
+		
+		Array<uint8> MeshData;
+		MeshData.PushBackReinterpret( Mesh );
+		mBlitQuad = Opengl::CreateGeometry( GetArrayBridge(MeshData), GetArrayBridge(Indexes), Vertex );
 	}
 
 	//	allocate objects we need!
 	if ( !mBlitShader.IsValid() )
 	{
+		/*
 		auto VertShader =	"uniform vec4 Rect;\n"
 							"attribute vec2 TexCoord;\n"
 							"varying vec2 oTexCoord;\n"
@@ -222,15 +236,36 @@ void TTextureWindow::DrawQuad(Opengl::TTexture Texture,Soy::Rectf Rect)
 							"{\n"
 							"	gl_FragColor = texture2D( Texture0, oTexCoord );\n"
 							"}\n";
+		*/
+		auto VertShader =
+		"uniform vec4 Rect;\n"
+		"attribute vec2 TexCoord;\n"
+		"varying vec2 oTexCoord;\n"
+		"void main()\n"
+		"{\n"
+		"   gl_Position = vec4(TexCoord.x,TexCoord.y,0,1);\n"
+		"   gl_Position.xy *= Rect.zw;\n"
+		"   gl_Position.xy += Rect.xy;\n"
+		//	move to view space 0..1 to -1..1
+		"	gl_Position.xy *= vec2(2,2);\n"
+		"	gl_Position.xy -= vec2(1,1);\n"
+		"	oTexCoord = TexCoord;\n"
+		"}\n";
+		auto FragShader =
+		"varying vec2 oTexCoord;\n"
+		"void main()\n"
+		"{\n"
+		"	gl_FragColor = vec4(oTexCoord.x,oTexCoord.y,0,1);\n"
+		"}\n";
 
-		mBlitShader = Opengl::BuildProgram( VertShader, FragShader, mBlitQuad );
+		mBlitShader = Opengl::BuildProgram( VertShader, FragShader, mBlitQuad.mVertexDescription );
 	}
 	
 	
 	//	do bindings
 	auto Shader = mBlitShader.Bind();
+	//Shader.SetUniform("Texture0", Texture );
 	Shader.SetUniform("Rect", Soy::RectToVector(Rect) );
-	Shader.SetUniform("Texture0", Texture );
 	mBlitQuad.Draw();
 	
 		
