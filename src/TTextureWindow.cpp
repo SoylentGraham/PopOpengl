@@ -127,8 +127,8 @@ void TTextureWindow::OnOpenglRender(Opengl::TRenderTarget& RenderTarget)
 		mPendingTexture.SetColour( GetArrayBridge(Rgb) );
 		SoyPixelsMetaFull Meta( mPendingTexture.GetWidth(), mPendingTexture.GetHeight(), mPendingTexture.GetFormat() );
 		
-		mTestTexture.reset( new Opengl::TTexture( Meta ) );
-		mTestTexture->Copy( mPendingTexture, true, true );
+		mTestTexture.reset( new Opengl::TTexture( Meta, GL_TEXTURE_2D ) );
+		mTestTexture->Copy( mPendingTexture, false, true );
 	}
 
 	
@@ -257,17 +257,17 @@ void TTextureWindow::DrawQuad(Opengl::TTexture Texture,Soy::Rectf Rect)
 		"uniform sampler2D Texture0;\n"
 		"void main()\n"
 		"{\n"
-		//"	gl_FragColor = vec4(oTexCoord.x,oTexCoord.y,0,1);\n"
-		"	gl_FragColor = texture2D(Texture0,oTexCoord);\n"
+		"	gl_FragColor = vec4(oTexCoord.x,oTexCoord.y,0,1);\n"
+		//"	gl_FragColor = texture2D(Texture0,oTexCoord);\n"
 		"}\n";
 
-		mBlitShader = Opengl::BuildProgram( VertShader, FragShader, mBlitQuad.mVertexDescription );
+		mBlitShader = Opengl::BuildProgram( VertShader, FragShader, mBlitQuad.mVertexDescription, "Blit shader" );
 	}
 	
 	
 	//	do bindings
 	auto Shader = mBlitShader.Bind();
-	Shader.SetUniform("Texture0", Texture );
+	//Shader.SetUniform("Texture0", Texture );
 	Shader.SetUniform("Rect", Soy::RectToVector(Rect) );
 	mBlitQuad.Draw();
 	
