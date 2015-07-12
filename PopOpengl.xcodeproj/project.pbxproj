@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BF7C5F171B52A4CD006D1DC0 /* PopOpengl in Resources */ = {isa = PBXBuildFile; fileRef = BF7C5F161B52A4CD006D1DC0 /* PopOpengl */; };
 		BF89F6B61B4AB9DC00F58561 /* SoyAssert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF89F6B41B4AB9DC00F58561 /* SoyAssert.cpp */; };
 		BF89F6B71B4AB9DC00F58561 /* SoyAssert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF89F6B41B4AB9DC00F58561 /* SoyAssert.cpp */; };
 		BF89F6BA1B4AE28F00F58561 /* SoyMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BF89F6B81B4AE28F00F58561 /* SoyMath.cpp */; };
@@ -644,7 +643,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BF7C5F171B52A4CD006D1DC0 /* PopOpengl in Resources */,
 				FBFFDB631A9D43E800330A83 /* PopAppBundle.xcconfig in Resources */,
 				FB2534BA1A974D0700A61590 /* PopOpengl.xib in Resources */,
 			);
